@@ -39,7 +39,7 @@ const routes = [
             { path: 'case-managers', name: 'admin.case-managers', component: () => import('@/views/admin/CaseManagersView.vue') },
             { path: 'schedule', name: 'admin.schedule', component: () => import('@/views/admin/ScheduleView.vue'), meta: { requiresAuth: true, role: 'admin' } },
             { path: 'appointments', name: 'admin.appointments', component: () => import('@/views/admin/AppointmentsView.vue'), meta: { requiresAuth: true, role: 'admin' } },
-            
+
             {
                 path: 'appointments/:date',
                 name: 'admin.appointments.day',
@@ -55,9 +55,16 @@ const routes = [
         children: [
             { path: 'dashboard', name: 'manager.dashboard', component: ManagerDashboard },
             { path: 'clients', name: 'manager.clients', component: () => import('@/views/manager/ClientsView.vue') },
-            { path: 'appointments', name: 'manager.appointments', component: () => import('@/views/manager/ManagerCalendarView.vue'), meta: { requiresAuth: true, role: 'case_manager' },
+            {
+                path: 'appointments', name: 'manager.appointments', component: () => import('@/views/manager/ManagerCalendarView.vue'), meta: { requiresAuth: true, role: 'case_manager' },
             },
-            { path: 'appointments/:date', name: 'manager.appointments.day', component: () => import('@/views/manager/ManagerAppointmentDayView.vue'), meta: { requiresAuth: true, role: 'case_manager' },},
+            { path: 'appointments/:date', name: 'manager.appointments.day', component: () => import('@/views/manager/ManagerAppointmentDayView.vue'), meta: { requiresAuth: true, role: 'case_manager' }, },
+            {
+                path: 'appointments-list',
+                name: 'manager.appointments.list',
+                component: () => import('@/views/manager/AppointmentsListView.vue'),
+                meta: { requiresAuth: true, role: 'case_manager' },
+            },
         ],
     },
     {
@@ -66,6 +73,12 @@ const routes = [
         meta: { requiresAuth: true, roles: ['client'] },
         children: [
             { path: 'dashboard', name: 'client.dashboard', component: ClientDashboard },
+            {
+                path: 'appointments-list',
+                name: 'client.appointments.list',
+                component: () => import('@/views/client/AppointmentsListView.vue'),
+                meta: { requiresAuth: true, role: 'client' },
+            },
         ],
     },
     {

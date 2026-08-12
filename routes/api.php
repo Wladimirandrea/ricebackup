@@ -7,11 +7,14 @@ use App\Http\Controllers\Api\Admin\CaseManagerController;
 use App\Http\Controllers\Api\Admin\DayOffController;
 use App\Http\Controllers\Api\Admin\ScheduleController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\Client\ClientAppointmentController;
 use App\Http\Controllers\Api\Manager\ManagerAppointmentController;
 use App\Http\Controllers\Api\Manager\ManagerClientController;
 use App\Http\Controllers\Api\PasswordResetController;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\Manager\ManagerTaskController;
+
 
 Broadcast::routes(['middleware' => ['auth:sanctum']]);
 // ── Rutas públicas ──────────────────────────────────────────
@@ -79,10 +82,19 @@ Route::middleware(['auth:sanctum', 'role:case_manager'])->prefix('manager')->gro
     Route::post('/appointments',         [ManagerAppointmentController::class, 'store']);
     Route::patch('/appointments/{appointment}/status', [ManagerAppointmentController::class, 'updateStatus']);
     Route::put('/appointments/{appointment}',          [ManagerAppointmentController::class, 'update']);
-    
-    
+
+    Route::get('/tasks', [ManagerTaskController::class, 'index']);
+    Route::post('/tasks', [ManagerTaskController::class, 'store']);
+    Route::patch('/tasks/{task}', [ManagerTaskController::class, 'update']);
+    Route::delete('/tasks/{task}', [ManagerTaskController::class, 'destroy']);
+
+    Route::get('/appointments/list', [ManagerAppointmentController::class, 'index']);
 });
 
 Route::middleware(['auth:sanctum', 'role:client'])->prefix('client')->group(function () {
-    // Route::get('/appointments', ...);
+    Route::get('/case-manager', [ClientAppointmentController::class, 'caseManager']);
+    Route::get('/appointments/calendar', [ClientAppointmentController::class, 'calendar']);
+    Route::get('/appointments/day',      [ClientAppointmentController::class, 'day']);
+    Route::get('/appointments/list', [ClientAppointmentController::class, 'index']);
+    Route::patch('/appointments/{appointment}/status', [ClientAppointmentController::class, 'updateStatus']);
 });

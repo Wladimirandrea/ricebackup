@@ -370,4 +370,54 @@ class ManagerAppointmentController extends Controller
             ],
         ]);
     }
+
+    /** GET /api/manager/appointments/list?status=pending&search=juan */
+    public function index(Request $request): JsonResponse
+    {
+        $status = $request->get('status', 'all');
+        $search = $request->get('search');
+        $managerId = $this->manager()->id;
+
+        // Conteos para los tabs (siempre sobre el total, sin filtrar por status)
+        $base = Appointment::where('case_manager_id', $managerId);
+        $counts = [
+            'all'       => (clone $base)->count(),
+            'pending'   => (clone $base)->where('status', 'pending')->count(),
+            'confirmed' => (clone $base)->where('status', 'confirmed')->count(),
+            'completed' => (clone $base)->where('status', 'completed')->count(),
+            'cancelled' => (clone $base)->where('status', 'cancelled')->count(),
+        ];
+
+        $query = Appointment::with('client:id,name,profile_image')
+            ->where('case_manager_id', $managerId)
+            ->orderBy('date', 'desc')
+            ->orderBy('start_time', 'desc');
+
+        if ($status !== 'all') {
+            $query->where('status', $status);
+        }
+
+        if ($search) {
+            $query->whereHas('client', fn($q) => $q->where('name', 'like', "%{$search}%"));
+        }
+
+        $appointments = $query->get()->map(fn($a) => [
+            'id'         => $a->id,
+            'date'       => $a->date->format('Y-m-d'),
+            'start_time' => substr($a->start_time, 0, 5),
+            'end_time'   => substr($a->end_time, 0, 5),
+            'status'     => $a->status,
+            'notes'      => $a->notes,
+            'client'     => $a->client ? [
+                'id'                 => $a->client->id,
+                'name'               => $a->client->name,
+                'profile_image_url'  => $a->client->profile_image_url,
+            ] : null,
+        ]);
+
+        return response()->json([
+            'appointments' => $appointments,
+            'counts'       => $counts,
+        ]);
+    }
 }

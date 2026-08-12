@@ -5,7 +5,8 @@
     "cancel": "Cancel",
     "error": "Error",
     "success": "Success",
-    "logout": "Logout"
+    "logout": "Logout",
+    "no": "No"
   },
   "auth": {
     "login": {
@@ -54,6 +55,66 @@
     "admin_title": "Admin Dashboard",
     "case_manager_title": "Manager Dashboard",
     "client_title": "My Appointments"
+  },
+  "managerDashboard": {
+    "greeting": "Welcome, {name}",
+    "days": {
+      "mon": "Monday",
+      "monShort": "Mon",
+      "tue": "Tuesday",
+      "tueShort": "Tue",
+      "wed": "Wednesday",
+      "wedShort": "Wed",
+      "thu": "Thursday",
+      "thuShort": "Thu",
+      "fri": "Friday",
+      "friShort": "Fri",
+      "sat": "Saturday",
+      "satShort": "Sat",
+      "sun": "Sunday",
+      "sunShort": "Sun"
+    },
+    "stats": {
+      "clients": "Clients",
+      "clientsSub": "Total active clients",
+      "completed": "Completed",
+      "completedSub": "Appointments completed this month",
+      "pending": "Pending",
+      "pendingSub": "Pending appointments this month",
+      "critical": "Today",
+      "criticalSub": "Appointments scheduled for today"
+    },
+    "week": {
+      "title": "Weekly Calendar",
+      "current": "Current week",
+      "loading": "Loading week..."
+    },
+    "agenda": {
+      "title": "Today's Agenda",
+      "loading": "Loading agenda...",
+      "hour": "Time",
+      "client": "Client",
+      "empty": "No appointments for today"
+    },
+    "charts": {
+      "caseStatusTitle": "Case Status",
+      "closed": "Closed",
+      "waiting": "Waiting",
+      "pending": "Pending",
+      "newClientsTitle": "New Clients",
+      "emptyMonth": "No data for this month"
+    },
+    "tasks": {
+      "title": "Tasks",
+      "placeholder": "New task...",
+      "priorityLow": "Low",
+      "priorityMedium": "Medium",
+      "priorityHigh": "High",
+      "adding": "Adding...",
+      "add": "Add",
+      "loading": "Loading tasks...",
+      "empty": "No tasks"
+    }
   },
   "users": {
     "title": "Users Manager",
@@ -168,7 +229,12 @@
     "noSlots": "No available slots for this day",
     "createdSuccess": "Appointment scheduled successfully!",
     "emailSent": "A confirmation email has been sent.",
-    "edit": "Edit appointment"
+    "edit": "Edit appointment",
+    "cancel": "Cancel",
+    "confirmCancel": "Are you sure you want to cancel this appointment?",
+    "cancelledSuccess": "Appointment cancelled successfully.",
+    "confirmCancelTitle": "Cancel appointment?",
+    "confirmCancelBtn": "Yes, cancel appointment"
   },
   "notifications": {
     "title": "Notifications",
@@ -195,5 +261,12 @@
     "changePassword": "Change password",
     "newPassword": "New password",
     "confirmPassword": "Confirm password"
+  },
+  "managerAppointmentsList": {
+    "searchPlaceholder": "Search by client name...",
+    "noAppointmentsDesc": "There are no appointments with this status"
+  },
+  "clientAppointmentsList": {
+    "noAppointmentsDesc": "You have no appointments with this status"
   }
 }

@@ -5,21 +5,22 @@
     "cancel": "Cancelar",
     "error": "Error",
     "success": "Éxito",
-    "logout": "Cerrar sesión"
+    "logout": "Cerrar sesión",
+    "no": "No"
   },
   "auth": {
     "login": {
-      "title": "Iniciar Sesión",
-      "subtitle": "Bienvenido de vuelta",
+      "title": "Iniciar sesión",
+      "subtitle": "Bienvenido de nuevo",
       "email": "Correo electrónico",
       "email_placeholder": "tucorreo.com",
       "password": "Contraseña",
       "password_placeholder": "••••••••",
-      "submit": "Entrar",
+      "submit": "Iniciar sesión",
       "submitting": "Verificando...",
-      "invalid_credentials": "Correo o contraseña incorrectos.",
-      "account_disabled": "Tu cuenta está desactivada.",
-      "generic_error": "Ocurrió un error. Intenta de nuevo."
+      "invalid_credentials": "Correo o contraseña inválidos.",
+      "account_disabled": "Tu cuenta ha sido deshabilitada.",
+      "generic_error": "Ocurrió un error. Inténtalo de nuevo."
     },
     "forgot": {
       "title": "¿Olvidaste tu contraseña?",
@@ -29,7 +30,7 @@
       "submitting": "Enviando...",
       "success": "Revisa tu correo, te enviamos el enlace.",
       "back_to_login": "Volver al inicio de sesión",
-      "generic_error": "Ocurrió un error. Intenta de nuevo."
+      "generic_error": "Ocurrió un error. Inténtalo de nuevo."
     },
     "reset": {
       "title": "Nueva contraseña",
@@ -39,14 +40,14 @@
       "submit": "Cambiar contraseña",
       "submitting": "Guardando...",
       "success": "Contraseña actualizada. Ya puedes iniciar sesión.",
-      "invalid_token": "El enlace es inválido o ha expirado.",
-      "generic_error": "Ocurrió un error. Intenta de nuevo."
+      "invalid_token": "El enlace no es válido o ha expirado.",
+      "generic_error": "Ocurrió un error. Inténtalo de nuevo."
     }
   },
   "roles": {
     "all": "Todos",
     "admin": "Administrador",
-    "case_manager": "Gestor de Casos",
+    "case_manager": "Gestor de casos",
     "client": "Cliente"
   },
   "dashboard": {
@@ -55,18 +56,78 @@
     "case_manager_title": "Panel del Gestor",
     "client_title": "Mis Citas"
   },
+  "managerDashboard": {
+    "greeting": "Bienvenido, {name}",
+    "days": {
+      "mon": "Lunes",
+      "monShort": "Lun",
+      "tue": "Martes",
+      "tueShort": "Mar",
+      "wed": "Miércoles",
+      "wedShort": "Mié",
+      "thu": "Jueves",
+      "thuShort": "Jue",
+      "fri": "Viernes",
+      "friShort": "Vie",
+      "sat": "Sábado",
+      "satShort": "Sáb",
+      "sun": "Domingo",
+      "sunShort": "Dom"
+    },
+    "stats": {
+      "clients": "Clientes",
+      "clientsSub": "Total de clientes activos",
+      "completed": "Completadas",
+      "completedSub": "Citas completadas este mes",
+      "pending": "Pendientes",
+      "pendingSub": "Citas pendientes este mes",
+      "critical": "Hoy",
+      "criticalSub": "Citas programadas para hoy"
+    },
+    "week": {
+      "title": "Calendario Semanal",
+      "current": "Semana actual",
+      "loading": "Cargando semana..."
+    },
+    "agenda": {
+      "title": "Agenda de Hoy",
+      "loading": "Cargando agenda...",
+      "hour": "Hora",
+      "client": "Cliente",
+      "empty": "No hay citas para hoy"
+    },
+    "charts": {
+      "caseStatusTitle": "Estado de Casos",
+      "closed": "Cerrados",
+      "waiting": "En espera",
+      "pending": "Pendientes",
+      "newClientsTitle": "Nuevos Clientes",
+      "emptyMonth": "No hay datos este mes"
+    },
+    "tasks": {
+      "title": "Tareas",
+      "placeholder": "Nueva tarea...",
+      "priorityLow": "Baja",
+      "priorityMedium": "Media",
+      "priorityHigh": "Alta",
+      "adding": "Agregando...",
+      "add": "Agregar",
+      "loading": "Cargando tareas...",
+      "empty": "No hay tareas"
+    }
+  },
   "users": {
-    "title": "Gestión de Usuarios",
+    "title": "Gestor de Usuarios",
     "create": "Crear Nuevo Usuario",
     "edit": "Editar Usuario",
     "delete": "Eliminar Usuario",
-    "confirm_delete": "¿Estás seguro de eliminar a {name}? Esta acción no se puede deshacer.",
+    "confirm_delete": "¿Estás seguro de que deseas eliminar a {name}? Esta acción no se puede deshacer.",
     "no_users": "No se encontraron usuarios",
     "delete_confirm": "Eliminar",
     "deleting": "Eliminando...",
     "form": {
       "full_name": "Nombre Completo",
-      "email": "Correo Electrónico",
+      "email": "Correo electrónico",
       "role": "Rol",
       "password": "Contraseña",
       "new_password": "Nueva Contraseña (dejar en blanco para mantener)",
@@ -76,7 +137,7 @@
       "create_user": "Crear Usuario",
       "update_user": "Actualizar Usuario",
       "saving": "Guardando...",
-      "error": "Ocurrió un error. Intenta de nuevo."
+      "error": "Ocurrió un error. Inténtalo de nuevo."
     },
     "roles": {
       "all": "Todos",
@@ -101,42 +162,42 @@
     "settings": "Configuración",
     "logout": "Cerrar sesión",
     "profile": "Perfil",
-    "schedule": "Agenda"
+    "schedule": "Horario"
   },
   "caseManagers": {
-    "title": "Case Managers",
-    "subtitle": "Administra tu equipo de case managers",
-    "searchPlaceholder": "Buscar por nombre o email...",
-    "role": "Cargo",
-    "roleLabel": "Case Manager",
+    "title": "Gestores de Casos",
+    "subtitle": "Administra tu equipo de gestores de casos",
+    "searchPlaceholder": "Buscar por nombre o correo...",
+    "role": "Puesto",
+    "roleLabel": "Gestor de Casos",
     "viewClients": "Ver Clientes",
     "clientsOf": "Clientes de",
-    "noClients": "Sin clientes asignados aún",
+    "noClients": "Aún no hay clientes asignados",
     "totalClients": "{count} cliente(s) asignado(s)",
-    "empty": "No se encontraron case managers",
+    "empty": "No se encontraron gestores de casos",
     "client": "Cliente",
     "clients": "Clientes",
     "assignedClients": "Clientes Asignados",
-    "unassigned": "Sin Asignar",
-    "noUnassigned": "Sin clientes sin asignar",
-    "reassign": "Reasignar a otro Case Manager",
+    "unassigned": "Sin asignar",
+    "noUnassigned": "No hay clientes sin asignar",
+    "reassign": "Reasignar a otro Gestor de Casos",
     "release": "Liberar cliente",
-    "noManagers": "No hay case managers disponibles",
-    "assignedManager": "Case Manager Asignado",
-    "noAssigned": "Sin case manager asignado"
+    "noManagers": "No hay gestores de casos disponibles",
+    "assignedManager": "Gestor de Casos Asignado",
+    "noAssigned": "No hay gestor de casos asignado"
   },
   "schedule": {
     "title": "Horario de Trabajo",
     "dayOff": "Día libre",
     "work": "Trabajo",
     "save": "Guardar",
-    "saved": "Guardado correctamente",
+    "saved": "Guardado exitosamente",
     "error": "Error al guardar el horario",
     "crumb": "Horario",
     "selectDaysOff": "Seleccionar Días Libres",
-    "daysOff": "Días Libres",
-    "reason": "Razón",
-    "reasonPlaceholder": "Razón opcional...",
+    "daysOff": "Días libres",
+    "reason": "Motivo",
+    "reasonPlaceholder": "Motivo opcional...",
     "noDaysOff": "No hay días libres registrados",
     "dateRequired": "Por favor selecciona una fecha",
     "delete": "Eliminar"
@@ -144,11 +205,11 @@
   "appointments": {
     "title": "Citas",
     "new": "Nueva Cita",
-    "all": "Todos",
+    "all": "Todas",
     "client": "Cliente",
-    "caseManager": "Gestor",
+    "caseManager": "Gestor de Casos",
     "date": "Fecha",
-    "startTime": "Hora Inicio",
+    "startTime": "Hora de Inicio",
     "status": "Estado",
     "notes": "Notas",
     "pending": "Pendiente",
@@ -156,32 +217,33 @@
     "completed": "Completada",
     "cancelled": "Cancelada",
     "changeStatus": "Cambiar Estado",
-    "noAppointments": "Sin citas para este día",
+    "noAppointments": "No hay citas para este día",
     "apptCount": "cita(s)",
     "selectClient": "Seleccionar cliente...",
-    "selectCM": "Seleccionar gestor...",
+    "selectCM": "Seleccionar gestor de casos...",
     "requiredFields": "Por favor completa todos los campos requeridos",
     "error": "Error al guardar la cita",
-    "dayOff": "Este día no es un día laborable",
+    "dayOff": "Este día no es laborable",
     "taken": "Ocupado",
-    "selectCMFirst": "Selecciona un gestor primero para ver los horarios disponibles",
+    "selectCMFirst": "Selecciona primero un gestor de casos para ver los horarios disponibles",
     "noSlots": "No hay horarios disponibles para este día",
-    "dayOffConflict": "This time slot is not available due to a day off.",
-    "nonWorkingDay": "Appointments cannot be scheduled on non-working days.",
-    "cmConflict": "This case manager already has an appointment at this time.",
-    "clientConflict": "This client already has an appointment at this time.",
     "createdSuccess": "¡Cita agendada exitosamente!",
-    "emailSent": "Se envió un correo de confirmación.",
-    "edit": "Editar cita"
+    "emailSent": "Se ha enviado un correo de confirmación.",
+    "edit": "Editar cita",
+    "cancel": "Cancelar",
+    "confirmCancel": "¿Estás seguro de que deseas cancelar esta cita?",
+    "cancelledSuccess": "Cita cancelada exitosamente.",
+    "confirmCancelTitle": "¿Cancelar cita?",
+    "confirmCancelBtn": "Sí, cancelar cita"
   },
   "notifications": {
     "title": "Notificaciones",
     "clearAll": "Borrar todo",
-    "empty": "Sin notificaciones aún",
+    "empty": "Aún no hay notificaciones",
     "newAppointment": "Nueva cita",
     "cancelled": "Cancelada",
     "status": "Estado",
-    "justNow": "Ahora mismo",
+    "justNow": "Justo ahora",
     "minsAgo": "min",
     "hoursAgo": "h",
     "daysAgo": "d"
@@ -190,7 +252,7 @@
     "title": "Clientes",
     "searchPlaceholder": "Buscar por nombre o correo...",
     "noClients": "No se encontraron clientes",
-    "noClientsDesc": "Todavía no hay clientes asignados",
+    "noClientsDesc": "Aún no hay clientes asignados",
     "active": "Activo",
     "inactive": "Inactivo",
     "totalAppts": "Total de citas",
@@ -199,5 +261,12 @@
     "changePassword": "Cambiar contraseña",
     "newPassword": "Nueva contraseña",
     "confirmPassword": "Confirmar contraseña"
+  },
+  "managerAppointmentsList": {
+    "searchPlaceholder": "Buscar por nombre de cliente...",
+    "noAppointmentsDesc": "No hay citas con este estado"
+  },
+  "clientAppointmentsList": {
+    "noAppointmentsDesc": "No tienes citas con este estado"
   }
 }

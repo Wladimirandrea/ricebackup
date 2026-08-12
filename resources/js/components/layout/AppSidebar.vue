@@ -27,12 +27,12 @@ const menuItems = computed(() => {
             { label: t('nav.dashboard'), icon: 'fa-house', route: 'manager.dashboard' },
             { label: t('nav.clients'), icon: 'fa-users', route: 'manager.clients' },
             { label: t('nav.appointments'), icon: 'fa-calendar-check', route: 'manager.appointments' },
-            { label: t('nav.calendar'), icon: 'fa-calendar', route: 'manager.calendar' },
+
         ]
     }
     return [
         { label: t('nav.dashboard'), icon: 'fa-house', route: 'client.dashboard' },
-        { label: t('nav.appointments'), icon: 'fa-calendar-check', route: 'client.appointments' },
+        { label: t('nav.appointments'), icon: 'fa-calendar-check', route: 'client.appointments.list' },
     ]
 })
 

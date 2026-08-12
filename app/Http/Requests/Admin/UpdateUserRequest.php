@@ -17,6 +17,24 @@ class UpdateUserRequest extends FormRequest
     public function rules(): array
     {
         $userId = $this->route('user');
+
+        if ($this->hasFile('profile_image')) {
+            $file = $this->file('profile_image');
+            \Log::info('debug FormRequest profile_image', [
+                'valid'      => $file->isValid(),
+                'error'      => $file->getError(),
+                'mime'       => $file->getMimeType(),
+                'extension'  => $file->getClientOriginalExtension(),
+                'size'       => $file->getSize(),
+                'clientMime' => $file->getClientMimeType(),
+            ]);
+        } else {
+            \Log::info('debug FormRequest: NO hasFile profile_image', [
+                'all_files' => $this->allFiles(),
+                'files_raw' => $_FILES ?? 'vacio',
+            ]);
+        }
+
         return [
             'name'          => ['required', 'string', 'max:255'],
             'email'         => ['required', 'email', Rule::unique('users')->ignore($userId)],

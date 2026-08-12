@@ -59,7 +59,7 @@
 
                         <!-- Cliente -->
                         <div class="ad-person">
-                            <img :src="appointment?.client?.profile_image || defaultAvatar" class="ad-person__avatar" />
+                            <img :src="appointment?.client?.profile_image_url || appointment?.client?.profile_image || defaultAvatar" class="ad-person__avatar" />
                             <div class="ad-person__info">
                                 <span class="ad-person__label">{{ $t('appointments.client') }}</span>
                                 <span class="ad-person__name">{{ appointment?.client?.name }}</span>
@@ -68,7 +68,7 @@
 
                         <!-- Case Manager -->
                         <div class="ad-person">
-                            <img :src="appointment?.case_manager?.profile_image || defaultAvatar" class="ad-person__avatar" />
+                            <img :src="appointment?.case_manager?.profile_image_url || appointment?.case_manager?.profile_image || defaultAvatar" class="ad-person__avatar" />
                             <div class="ad-person__info">
                                 <span class="ad-person__label">Case Manager</span>
                                 <span class="ad-person__name">{{ appointment?.case_manager?.name }}</span>

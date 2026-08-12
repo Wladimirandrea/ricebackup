@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch, computed } from 'vue'
+import { ref, watch, computed, markRaw } from 'vue'
 import { useI18n } from 'vue-i18n'
 import AppModal from '@/components/ui/AppModal.vue'
 import api from '@/plugins/axios'
@@ -62,7 +62,7 @@ watch(() => props.show, (val) => {
 function handleImageChange(e) {
     const file = e.target.files[0]
     if (!file) return
-    form.value.profile_image = file
+    form.value.profile_image = markRaw(file)
     imagePreview.value = URL.createObjectURL(file)
 }
 
@@ -70,7 +70,7 @@ async function handleSubmit() {
     errors.value = {}
     serverError.value = ''
     isLoading.value = true
-
+ console.log('profile_image al momento de submit:', form.value.profile_image)
     try {
         const formData = new FormData()
         formData.append('name', form.value.name)
@@ -90,14 +90,10 @@ async function handleSubmit() {
 
         if (isEditing.value) {
             formData.append('_method', 'PUT')
-            const { data } = await api.post(`/admin/users/${props.user.id}`, formData, {
-                headers: { 'Content-Type': 'multipart/form-data' }
-            })
+            const { data } = await api.post(`/admin/users/${props.user.id}`, formData)
             savedUser = data.data
         } else {
-            const { data } = await api.post('/admin/users', formData, {
-                headers: { 'Content-Type': 'multipart/form-data' }
-            })
+            const { data } = await api.post('/admin/users', formData)
             savedUser = data.data
         }
 

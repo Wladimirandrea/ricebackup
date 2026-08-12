@@ -68,32 +68,46 @@ class AdminUserController extends Controller
         ]);
     }
 
-    public function update(UpdateUserRequest $request, User $user): JsonResponse
+    public function update(Request $request, User $user)
     {
-        $data = [
-            'name'  => $request->name,
-            'email' => $request->email,
-            'role'  => $request->role,
-        ];
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            'password' => 'nullable|string|min:8',
+            'role' => 'required|in:admin,case_manager,client',
+            'profile_image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'is_active' => 'boolean',
+        ]);
 
-        if ($request->filled('password')) {
-            $data['password'] = Hash::make($request->password);
-        }
-
+        // Si sube una nueva imagen
         if ($request->hasFile('profile_image')) {
-            if ($user->profile_image) {
+
+            // Eliminar la imagen anterior si existe
+            if ($user->profile_image && Storage::disk('public')->exists($user->profile_image)) {
                 Storage::disk('public')->delete($user->profile_image);
             }
-            $data['profile_image'] = $request->file('profile_image')
-                ->store('profile-images', 'public');
+
+            $path = $request->file('profile_image')->store('profile-images', 'public');
+            $validated['profile_image'] = $path;
+        } else {
+            // Si no sube imagen nueva, no tocar el campo
+            unset($validated['profile_image']);
         }
 
-        $user->update($data);
+        // Solo actualizar password si se envió uno
+        if (!empty($validated['password'])) {
+            $validated['password'] = Hash::make($validated['password']);
+        } else {
+            unset($validated['password']);
+        }
 
-        return response()->json([
-            'message' => 'Usuario actualizado correctamente.',
-            'data'    => $this->formatUser($user->fresh()),
-        ]);
+        $validated['is_active'] = $request->boolean('is_active');
+
+        $user->update($validated);
+
+        return redirect()
+            ->route('users.index')
+            ->with('success', 'Usuario actualizado correctamente.');
     }
 
     public function destroy(User $user): JsonResponse

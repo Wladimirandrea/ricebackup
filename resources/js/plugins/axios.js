@@ -14,7 +14,17 @@ api.interceptors.request.use((config) => {
     if (token) {
         config.headers.Authorization = `Bearer ${token}`
     }
-    config.headers['Accept-Language'] = i18n.global.locale.value  
+    config.headers['Accept-Language'] = i18n.global.locale.value
+
+    // Si el body es FormData (por ejemplo, al subir archivos/imágenes),
+    // eliminamos el Content-Type fijo para que el navegador genere
+    // automáticamente el correcto, incluyendo el boundary necesario
+    // para multipart/form-data. Sin esto, los archivos llegan
+    // corruptos o vacíos al backend.
+    if (config.data instanceof FormData) {
+        delete config.headers['Content-Type']
+    }
+
     return config
 })
 
@@ -22,7 +32,6 @@ api.interceptors.response.use(
     (response) => response,
     (error) => {
         const isLoginRequest = error.config?.url?.includes('/auth/login')
-        
         if (error.response?.status === 401 && !isLoginRequest) {
             localStorage.removeItem('token')
             localStorage.removeItem('user')
