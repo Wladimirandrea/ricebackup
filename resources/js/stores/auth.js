@@ -2,20 +2,18 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import api from '@/plugins/axios'
 import router from '@/router'
+import { useNotificationStore } from '@/stores/notificationStore'   // ← import normal, arriba
 
 export const useAuthStore = defineStore('auth', () => {
-  // ── State ────────────────────────────────────────────────
   const token = ref(localStorage.getItem('token') || null)
   const user  = ref(JSON.parse(localStorage.getItem('user') || 'null'))
 
-  // ── Getters ──────────────────────────────────────────────
   const isAuthenticated = computed(() => !!token.value)
   const userRole        = computed(() => user.value?.role || null)
   const isAdmin         = computed(() => user.value?.role === 'admin')
   const isCaseManager   = computed(() => user.value?.role === 'case_manager')
   const isClient        = computed(() => user.value?.role === 'client')
 
-  // ── Actions ──────────────────────────────────────────────
   async function login(credentials) {
     const { data } = await api.post('/auth/login', credentials)
 
@@ -25,7 +23,6 @@ export const useAuthStore = defineStore('auth', () => {
     localStorage.setItem('token', data.access_token)
     localStorage.setItem('user',  JSON.stringify(data.user))
 
-    // Redirigir según rol
     redirectByRole(data.user.role)
   }
 
@@ -49,6 +46,10 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   function clearSession() {
+    const notifStore = useNotificationStore()
+    notifStore.unsubscribeReverb()
+    notifStore.clear()
+
     token.value = null
     user.value  = null
     localStorage.removeItem('token')
@@ -69,7 +70,4 @@ export const useAuthStore = defineStore('auth', () => {
     isAuthenticated, userRole, isAdmin, isCaseManager, isClient,
     login, logout, fetchMe, clearSession,
   }
-}, {
-  // Hydration automática sin necesidad de localStorage manual
-  // (usando pinia-plugin-persistedstate si lo prefieres)
 })

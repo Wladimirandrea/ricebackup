@@ -29,8 +29,8 @@ function handleToggle() {
 }
 
 onMounted(() => {
-    // Admin y case manager reciben notificaciones de citas en tiempo real
-    if (auth.isAdmin || auth.isCaseManager) {
+    // Admin, case manager y cliente reciben notificaciones de citas en tiempo real
+    if (auth.isAdmin || auth.isCaseManager || auth.isClient) {
         notifStore.subscribeReverb()
     }
 })

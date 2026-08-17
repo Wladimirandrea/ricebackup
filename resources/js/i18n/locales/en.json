@@ -123,8 +123,11 @@
     "delete": "Delete User",
     "confirm_delete": "Are you sure you want to delete {name}? This action cannot be undone.",
     "no_users": "No users found",
+    "no_user_found": "That user could not be found",
     "delete_confirm": "Delete",
     "deleting": "Deleting...",
+    "role_label": "Role:",
+    "photo_alt": "User photo",
     "form": {
       "full_name": "Full Name",
       "email": "Email",
@@ -148,6 +151,17 @@
     "crumbs": {
       "dashboard": "Dashboard",
       "users": "Users"
+    },
+    "filters": {
+      "all": "All"
+    },
+    "search_placeholder": "Search by name or role...",
+    "book": {
+      "user_data_title": "USER DATA",
+      "name_label": "Name:",
+      "role_label": "Role:",
+      "status_label": "Status:",
+      "active_status": "Active"
     }
   },
   "nav": {

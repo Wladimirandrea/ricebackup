@@ -35,6 +35,7 @@ api.interceptors.response.use(
         if (error.response?.status === 401 && !isLoginRequest) {
             localStorage.removeItem('token')
             localStorage.removeItem('user')
+            localStorage.removeItem('app_notifications')
             window.location.href = '/'
         }
 

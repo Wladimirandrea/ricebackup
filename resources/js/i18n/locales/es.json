@@ -10,7 +10,7 @@
   },
   "auth": {
     "login": {
-      "title": "Iniciar sesión",
+      "title": "Iniciar Sesión",
       "subtitle": "Bienvenido de nuevo",
       "email": "Correo electrónico",
       "email_placeholder": "tucorreo.com",
@@ -26,7 +26,7 @@
       "title": "¿Olvidaste tu contraseña?",
       "subtitle": "Te enviaremos un enlace de recuperación",
       "email": "Correo electrónico",
-      "submit": "Enviar enlace",
+      "submit": "Enviar enlace de recuperación",
       "submitting": "Enviando...",
       "success": "Revisa tu correo, te enviamos el enlace.",
       "back_to_login": "Volver al inicio de sesión",
@@ -40,14 +40,14 @@
       "submit": "Cambiar contraseña",
       "submitting": "Guardando...",
       "success": "Contraseña actualizada. Ya puedes iniciar sesión.",
-      "invalid_token": "El enlace no es válido o ha expirado.",
+      "invalid_token": "El enlace es inválido o ha expirado.",
       "generic_error": "Ocurrió un error. Inténtalo de nuevo."
     }
   },
   "roles": {
     "all": "Todos",
     "admin": "Administrador",
-    "case_manager": "Gestor de casos",
+    "case_manager": "Gestor de Casos",
     "client": "Cliente"
   },
   "dashboard": {
@@ -102,7 +102,7 @@
       "waiting": "En espera",
       "pending": "Pendientes",
       "newClientsTitle": "Nuevos Clientes",
-      "emptyMonth": "No hay datos este mes"
+      "emptyMonth": "No hay datos para este mes"
     },
     "tasks": {
       "title": "Tareas",
@@ -123,11 +123,14 @@
     "delete": "Eliminar Usuario",
     "confirm_delete": "¿Estás seguro de que deseas eliminar a {name}? Esta acción no se puede deshacer.",
     "no_users": "No se encontraron usuarios",
+    "no_user_found": "No se encuentra ese usuario",
     "delete_confirm": "Eliminar",
     "deleting": "Eliminando...",
+    "role_label": "Rol:",
+    "photo_alt": "Foto del usuario",
     "form": {
       "full_name": "Nombre Completo",
-      "email": "Correo electrónico",
+      "email": "Correo Electrónico",
       "role": "Rol",
       "password": "Contraseña",
       "new_password": "Nueva Contraseña (dejar en blanco para mantener)",
@@ -148,6 +151,17 @@
     "crumbs": {
       "dashboard": "Panel",
       "users": "Usuarios"
+    },
+    "filters": {
+      "all": "Todos"
+    },
+    "search_placeholder": "Buscar por nombre o rol...",
+    "book": {
+      "user_data_title": "DATOS DEL USUARIO",
+      "name_label": "Nombre:",
+      "role_label": "Rol:",
+      "status_label": "Estado:",
+      "active_status": "Activo"
     }
   },
   "nav": {
@@ -155,7 +169,7 @@
     "dashboard": "Panel",
     "users": "Usuarios",
     "caseManagers": "Gestores",
-    "reports": "Reportes",
+    "reports": "Informes",
     "calendar": "Calendario",
     "clients": "Clientes",
     "appointments": "Citas",
@@ -184,7 +198,7 @@
     "release": "Liberar cliente",
     "noManagers": "No hay gestores de casos disponibles",
     "assignedManager": "Gestor de Casos Asignado",
-    "noAssigned": "No hay gestor de casos asignado"
+    "noAssigned": "Sin gestor de casos asignado"
   },
   "schedule": {
     "title": "Horario de Trabajo",
@@ -223,11 +237,11 @@
     "selectCM": "Seleccionar gestor de casos...",
     "requiredFields": "Por favor completa todos los campos requeridos",
     "error": "Error al guardar la cita",
-    "dayOff": "Este día no es laborable",
+    "dayOff": "Este día no es un día laboral",
     "taken": "Ocupado",
     "selectCMFirst": "Selecciona primero un gestor de casos para ver los horarios disponibles",
     "noSlots": "No hay horarios disponibles para este día",
-    "createdSuccess": "¡Cita agendada exitosamente!",
+    "createdSuccess": "¡Cita programada exitosamente!",
     "emailSent": "Se ha enviado un correo de confirmación.",
     "edit": "Editar cita",
     "cancel": "Cancelar",
@@ -263,7 +277,7 @@
     "confirmPassword": "Confirmar contraseña"
   },
   "managerAppointmentsList": {
-    "searchPlaceholder": "Buscar por nombre de cliente...",
+    "searchPlaceholder": "Buscar por nombre del cliente...",
     "noAppointmentsDesc": "No hay citas con este estado"
   },
   "clientAppointmentsList": {
