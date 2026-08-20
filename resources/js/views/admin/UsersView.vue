@@ -53,7 +53,7 @@ const teamMembers = computed(() => {
         }))
     }
     return [
-        { id: 'placeholder-1', name: t('users.no_user_found'), role: "---", img: "/images/nofound.jpeg", isPlaceholder: true }
+        { id: 'placeholder-1', name: t('users.no_user_found', 'No se encuentra ese usuario'), role: "---", img: "/images/nofound.jpeg", isPlaceholder: true }
     ]
 })
 
@@ -156,11 +156,9 @@ function onSaved(updatedUser) {
         users.value.splice(index, 1, busted)
     } else {
         users.value.unshift(updatedUser)
-        currentIndex.value = 0
     }
     showForm.value = false
     showMobileBookModal.value = false
-    nextTick(() => updateCarousel(currentIndex.value))
 }
 
 function handleCardClick(index) {
@@ -337,14 +335,14 @@ watch(showMobileBookModal, (val) => {
                 <div class="filters-container">
                     <button v-for="role in availableRoles" :key="role" class="filter-btn"
                         :class="{ active: selectedRole === role }" @click="filterByRole(role)">
-                        {{ role === 'all' ? t('users.filters.all') : role.charAt(0).toUpperCase() + role.slice(1) }}
+                        {{ role === 'all' ? t('users.filters.all', 'Todos') : role.charAt(0).toUpperCase() + role.slice(1) }}
                     </button>
                 </div>
 
                 <div class="search-container">
                     <div class="search-input-wrapper">
                         <i class="fa-solid fa-magnifying-glass"></i>
-                        <input type="text" v-model="searchQuery" :placeholder="t('users.search_placeholder')"
+                        <input type="text" v-model="searchQuery" :placeholder="t('users.search_placeholder', 'Buscar por nombre o rol...')"
                             class="search-input" />
                         <button v-if="searchQuery" @click="searchQuery = ''" class="clear-search">
                             <i class="fa-solid fa-xmark"></i>
@@ -386,11 +384,11 @@ watch(showMobileBookModal, (val) => {
 
                                 <div class="foto">
                                     <div class="foto-img-container">
-                                        <img :src="activeMember.img" :alt="t('users.photo_alt')">
+                                        <img :src="activeMember.img" alt="Foto del Usuario">
                                     </div>
                                     <div class="foto-texto">
                                         <span class="nombre">{{ activeMember.name }}</span>
-                                        <span class="rol" v-if="!activeMember.isPlaceholder">{{ t('users.role_label') }} {{ activeMember.role }}</span>
+                                        <span class="rol" v-if="!activeMember.isPlaceholder">{{ t('users.role_label', 'Rol:') }} {{ activeMember.role }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -405,34 +403,34 @@ watch(showMobileBookModal, (val) => {
                                 <div>
                                     <div class="foto-interior">
                                         <div class="foto-img-container">
-                                            <img :src="activeMember.img" :alt="t('users.photo_alt')">
+                                            <img :src="activeMember.img" alt="Foto del Usuario">
                                         </div>
                                     </div>
 
-                                    <h2>{{ t('users.book.user_data_title') }}</h2>
+                                    <h2>{{ t('users.book.user_data_title', 'DATOS DEL USUARIO') }}</h2>
                                     <div class="info-usuario">
                                         <div class="info-item">
-                                            <strong>{{ t('users.book.name_label') }}</strong>
+                                            <strong>{{ t('users.book.name_label', 'Nombre:') }}</strong>
                                             <span>{{ activeMember.name }}</span>
                                         </div>
                                         <div class="info-item" v-if="!activeMember.isPlaceholder">
-                                            <strong>{{ t('users.book.role_label') }}</strong>
+                                            <strong>{{ t('users.book.role_label', 'Rol:') }}</strong>
                                             <span>{{ activeMember.role }}</span>
                                         </div>
                                         <div class="info-item" v-if="!activeMember.isPlaceholder">
-                                            <strong>{{ t('users.book.status_label') }}</strong>
-                                            <span class="badge-activo">{{ t('users.book.active_status') }}</span>
+                                            <strong>{{ t('users.book.status_label', 'Estado:') }}</strong>
+                                            <span class="badge-activo">{{ t('users.book.active_status', 'Activo') }}</span>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="acciones-container"
                                     v-if="!activeMember.id.toString().includes('placeholder')">
-                                    <button class="btn-accion btn-editar" :title="t('users.edit')"
+                                    <button class="btn-accion btn-editar" :title="t('users.edit', 'Editar')"
                                         @click="editUser(activeMember)">
                                         <i class="fa-solid fa-pen"></i>
                                     </button>
-                                    <button class="btn-accion btn-eliminar" :title="t('users.delete')"
+                                    <button class="btn-accion btn-eliminar" :title="t('users.delete', 'Eliminar')"
                                         @click="confirmDelete(activeMember)">
                                         <i class="fa-solid fa-trash-can"></i>
                                     </button>
@@ -462,11 +460,11 @@ watch(showMobileBookModal, (val) => {
 
                             <div class="foto">
                                 <div class="foto-img-container">
-                                    <img :src="activeMember.img" :alt="t('users.photo_alt')">
+                                    <img :src="activeMember.img" alt="Foto del Usuario">
                                 </div>
                                 <div class="foto-texto">
                                     <span class="nombre">{{ activeMember.name }}</span>
-                                    <span class="rol" v-if="!activeMember.isPlaceholder">{{ t('users.role_label') }} {{ activeMember.role }}</span>
+                                    <span class="rol" v-if="!activeMember.isPlaceholder">{{ t('users.role_label', 'Rol:') }} {{ activeMember.role }}</span>
                                 </div>
                             </div>
                         </div>
@@ -481,34 +479,34 @@ watch(showMobileBookModal, (val) => {
                             <div>
                                 <div class="foto-interior">
                                     <div class="foto-img-container">
-                                        <img :src="activeMember.img" :alt="t('users.photo_alt')">
+                                        <img :src="activeMember.img" alt="Foto del Usuario">
                                     </div>
                                 </div>
 
-                                <h2>{{ t('users.book.user_data_title') }}</h2>
+                                <h2>{{ t('users.book.user_data_title', 'DATOS DEL USUARIO') }}</h2>
                                 <div class="info-usuario">
                                     <div class="info-item">
-                                        <strong>{{ t('users.book.name_label') }}</strong>
+                                        <strong>{{ t('users.book.name_label', 'Nombre:') }}</strong>
                                         <span>{{ activeMember.name }}</span>
                                     </div>
                                     <div class="info-item" v-if="!activeMember.isPlaceholder">
-                                        <strong>{{ t('users.book.role_label') }}</strong>
+                                        <strong>{{ t('users.book.role_label', 'Rol:') }}</strong>
                                         <span>{{ activeMember.role }}</span>
                                     </div>
                                     <div class="info-item" v-if="!activeMember.isPlaceholder">
-                                        <strong>{{ t('users.book.status_label') }}</strong>
-                                        <span class="badge-activo">{{ t('users.book.active_status') }}</span>
+                                        <strong>{{ t('users.book.status_label', 'Estado:') }}</strong>
+                                        <span class="badge-activo">{{ t('users.book.active_status', 'Activo') }}</span>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="acciones-container"
                                 v-if="!activeMember.id.toString().includes('placeholder')">
-                                <button class="btn-accion btn-editar" :title="t('users.edit')"
+                                <button class="btn-accion btn-editar" :title="t('users.edit', 'Editar')"
                                     @click="editUser(activeMember)">
                                     <i class="fa-solid fa-pen"></i>
                                 </button>
-                                <button class="btn-accion btn-eliminar" :title="t('users.delete')"
+                                <button class="btn-accion btn-eliminar" :title="t('users.delete', 'Eliminar')"
                                     @click="confirmDelete(activeMember)">
                                     <i class="fa-solid fa-trash-can"></i>
                                 </button>
@@ -685,7 +683,7 @@ watch(showMobileBookModal, (val) => {
     gap: 60px;
     align-items: center;
     justify-content: center;
-    margin: 0 auto;
+    margin: 50px auto 0 auto; /* <- Aquí aumentamos el espacio superior en PC */
     box-sizing: border-box;
 }
 
@@ -1181,6 +1179,7 @@ watch(showMobileBookModal, (val) => {
         height: auto;
         gap: 20px;
         max-width: 100%;
+        margin-top: 10px; /* Separación más compacta en móvil */
     }
 
     .carousel-section {

@@ -14,6 +14,8 @@ use App\Http\Controllers\Api\PasswordResetController;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Manager\ManagerTaskController;
+use App\Http\Controllers\Api\Admin\DashboardController;
+
 
 
 Broadcast::routes(['middleware' => ['auth:sanctum']]);
@@ -69,6 +71,8 @@ Route::middleware(['auth:sanctum', 'role:admin'])->prefix('admin')->group(functi
     Route::put('/appointments/{appointment}', [AppointmentController::class, 'update']);
     Route::patch('/appointments/{appointment}/status', [AppointmentController::class, 'updateStatus']);
     Route::get('/appointments/slots', [AppointmentController::class, 'slots']);
+
+    Route::get('/dashboard/stats', [DashboardController::class, 'stats']);
 });
 
 Route::middleware(['auth:sanctum', 'role:case_manager'])->prefix('manager')->group(function () {
