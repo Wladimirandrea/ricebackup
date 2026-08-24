@@ -194,22 +194,18 @@ class ClientAppointmentController extends Controller
         $manager = $this->client()->caseManagers()->first();
 
         if (!$manager) {
-            return response()->json([
-                'is_working' => false,
-                'slots'      => []
-            ]);
+            return response()->json(['is_working' => false, 'slots' => []]);
         }
 
         $carbonDate = \Carbon\Carbon::parse($date);
 
-        if ($carbonDate->isWeekend()) {
-            return response()->json([
-                'is_working' => false,
-                'slots'      => []
-            ]);
+        // 🔹 NUEVO: buscar el horario configurado para ese día de la semana
+        $schedule = \App\Models\Schedule::where('day_of_week', $carbonDate->dayOfWeek)->first();
+
+        if (!$schedule || !$schedule->is_working) {
+            return response()->json(['is_working' => false, 'slots' => []]);
         }
 
-        // 🔹 NUEVO: traer los DayOff registrados para esa fecha
         $dayOffs = \App\Models\DayOff::whereDate('date', $date)->get();
 
         $existingAppointments = Appointment::where('case_manager_id', $manager->id)
@@ -220,16 +216,14 @@ class ClientAppointmentController extends Controller
             ->toArray();
 
         $slots = [];
-        $start = \Carbon\Carbon::parse('09:00');
-        $end   = \Carbon\Carbon::parse('17:00');
+        // 🔹 usar el horario real del día en vez de 09:00–17:00 fijo
+        $start = \Carbon\Carbon::parse(substr($schedule->start_time, 0, 5));
+        $end   = \Carbon\Carbon::parse(substr($schedule->end_time, 0, 5));
         $availableCount = 0;
 
         while ($start < $end) {
             $timeString = $start->format('H:i');
 
-            $isPast = $carbonDate->isToday() && $timeString <= now()->format('H:i');
-
-            // 🔹 NUEVO: ¿este horario cae dentro de un DayOff?
             $isDayOffTime = false;
             foreach ($dayOffs as $off) {
                 $offStart = substr($off->start_time, 0, 5);
@@ -240,8 +234,14 @@ class ClientAppointmentController extends Controller
                 }
             }
 
+            if ($isDayOffTime) {
+                $start->addMinutes(30);
+                continue;
+            }
+
+            $isPast = $carbonDate->isToday() && $timeString <= now()->format('H:i');
             $hasAppointment = in_array($timeString, $existingAppointments);
-            $isAvailable = !$isPast && !$isDayOffTime && !$hasAppointment;
+            $isAvailable = !$isPast && !$hasAppointment;
 
             if ($isAvailable) {
                 $availableCount++;
@@ -255,12 +255,8 @@ class ClientAppointmentController extends Controller
             $start->addMinutes(30);
         }
 
-        // 🔹 NUEVO: si el día completo está bloqueado por DayOff, is_working = false
-        $isWorking = $availableCount > 0 || $slots === [];
-        // (si prefieres distinguir "sin horarios disponibles" de "no laborable", ver nota abajo)
-
         return response()->json([
-            'is_working' => $availableCount > 0,
+            'is_working' => count($slots) > 0 && $availableCount > 0,
             'slots'      => $slots,
         ]);
     }
