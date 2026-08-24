@@ -40,74 +40,74 @@
                 <p>{{ $t('appointments.noAppointments') }}</p>
             </div>
 
-            <!-- Timeline (desktop/tablet) -->
-            <div v-else class="day-timeline-wrapper">
-                <div class="day-timeline-header">
-                    <div class="day-timeline-header__spacer" />
-                    <div class="day-timeline-header__clients">
-                        <div v-for="client in uniqueClients" :key="client.id" class="day-col-header">
-                            <img :src="client.profile_image || defaultAvatar" :alt="client.name" class="day-col-avatar" />
-                            <span class="day-col-name">{{ client.name }}</span>
-                            <span class="day-col-count">{{ clientAppts(client.id).length }} {{ $t('appointments.apptCount') }}</span>
+            <!-- Vista de Citas (Timeline para Desktop y Lista para Mobile) -->
+            <template v-else>
+                <!-- Timeline (desktop/tablet) -->
+                <div class="day-timeline-wrapper">
+                    <div class="day-timeline-header">
+                        <div class="day-timeline-header__spacer" />
+                        <div class="day-timeline-header__clients">
+                            <div v-for="client in uniqueClients" :key="client.id" class="day-col-header">
+                                <img :src="client.profile_image || defaultAvatar" :alt="client.name" class="day-col-avatar" />
+                                <span class="day-col-name">{{ client.name }}</span>
+                                <span class="day-col-count">{{ clientAppts(client.id).length }} {{ $t('appointments.apptCount') }}</span>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="day-timeline-body">
-                    <div class="day-timeline__hours">
-                        <div v-for="slot in timeSlots" :key="slot" class="day-timeline__hour">{{ slot }}</div>
-                    </div>
-                    <div class="day-timeline__clients">
-                        <div v-for="client in uniqueClients" :key="client.id" class="day-timeline__client-col">
-                            <div class="day-col-slots">
-                                <div
-                                    v-for="slot in timeSlots"
-                                    :key="slot"
-                                    class="day-slot"
-                                    :class="{ 'day-slot--available': isSlotAvailable(slot) }"
-                                >
+                    <div class="day-timeline-body">
+                        <div class="day-timeline__hours">
+                            <div v-for="slot in timeSlots" :key="slot" class="day-timeline__hour">{{ slot }}</div>
+                        </div>
+                        <div class="day-timeline__clients">
+                            <div v-for="client in uniqueClients" :key="client.id" class="day-timeline__client-col">
+                                <div class="day-col-slots">
                                     <div
-                                        v-for="appt in getSlotAppt(client.id, slot)"
-                                        :key="appt.id"
-                                        class="day-appt"
-                                        :class="`day-appt--${appt.status}`"
-                                        @click="onApptClick(appt)"
+                                        v-for="slot in timeSlots"
+                                        :key="slot"
+                                        class="day-slot"
+                                        :class="{ 'day-slot--available': isSlotAvailable(slot) }"
                                     >
-                                        <div class="day-appt__top">
-                                            <span class="day-appt__client">{{ appt.client.name }}</span>
-                                            <span v-if="appt.notes" class="day-appt__notes">{{ appt.notes }}</span>
+                                        <div
+                                            v-for="appt in getSlotAppt(client.id, slot)"
+                                            :key="appt.id"
+                                            class="day-appt"
+                                            :class="`day-appt--${appt.status}`"
+                                            @click="onApptClick(appt)"
+                                        >
+                                            <div class="day-appt__top">
+                                                <span class="day-appt__client">{{ appt.client?.name }}</span>
+                                                <span v-if="appt.notes" class="day-appt__notes">{{ appt.notes }}</span>
+                                            </div>
+                                            <span class="day-appt__time">{{ appt.start_time }} — {{ appt.end_time }}</span>
                                         </div>
-                                        <span class="day-appt__time">{{ appt.start_time }} — {{ appt.end_time }}</span>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Lista de citas (mobile) -->
-            <div
-                v-if="!store.loadingDay && store.daySchedule?.is_working && !store.isDayOff && store.dayAppointments.length > 0"
-                class="day-mobile-list"
-            >
-                <div
-                    v-for="appt in sortedAppointments"
-                    :key="appt.id"
-                    class="day-mobile-card"
-                    :class="`day-mobile-card--${appt.status}`"
-                    @click="onApptClick(appt)"
-                >
-                    <img :src="appt.client.profile_image || defaultAvatar" :alt="appt.client.name" class="day-mobile-card__avatar" />
-                    <div class="day-mobile-card__info">
-                        <span class="day-mobile-card__name">{{ appt.client.name }}</span>
-                        <span class="day-mobile-card__time">{{ appt.start_time }} — {{ appt.end_time }}</span>
+                <!-- Lista de citas (mobile) -->
+                <div class="day-mobile-list">
+                    <div
+                        v-for="appt in sortedAppointments"
+                        :key="appt.id"
+                        class="day-mobile-card"
+                        :class="`day-mobile-card--${appt.status}`"
+                        @click="onApptClick(appt)"
+                    >
+                        <img :src="appt.client?.profile_image || defaultAvatar" :alt="appt.client?.name" class="day-mobile-card__avatar" />
+                        <div class="day-mobile-card__info">
+                            <span class="day-mobile-card__name">{{ appt.client?.name }}</span>
+                            <span class="day-mobile-card__time">{{ appt.start_time }} — {{ appt.end_time }}</span>
+                        </div>
+                        <button type="button" class="day-mobile-card__edit" @click.stop="onApptClick(appt)">
+                            <i class="fa-solid fa-pen" />
+                        </button>
                     </div>
-                    <button type="button" class="day-mobile-card__edit" @click.stop="onApptClick(appt)">
-                        <i class="fa-solid fa-pen" />
-                    </button>
                 </div>
-            </div>
+            </template>
         </div>
 
         <!-- Modal nueva cita -->
@@ -145,7 +145,10 @@ const date = computed(() => route.params.date)
 
 const formattedDate = computed(() => {
     if (!date.value) return ''
-    return new Date(date.value + 'T00:00:00').toLocaleDateString(
+    const [year, month, day] = date.value.split('-').map(Number)
+    const localDate = new Date(year, month - 1, day)
+    
+    return localDate.toLocaleDateString(
         locale.value === 'es' ? 'es-ES' : 'en-US',
         { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }
     )
@@ -169,7 +172,11 @@ const timeSlots = computed(() => {
 
 const uniqueClients = computed(() => {
     const map = new Map()
-    store.dayAppointments.forEach(a => { if (!map.has(a.client.id)) map.set(a.client.id, a.client) })
+    store.dayAppointments.forEach(a => { 
+        if (a.client?.id && !map.has(a.client.id)) {
+            map.set(a.client.id, a.client) 
+        }
+    })
     return Array.from(map.values())
 })
 
@@ -178,10 +185,10 @@ const sortedAppointments = computed(() => {
 })
 
 function clientAppts(clientId) {
-    return store.dayAppointments.filter(a => a.client.id === clientId)
+    return store.dayAppointments.filter(a => a.client?.id === clientId)
 }
 function getSlotAppt(clientId, slot) {
-    return store.dayAppointments.filter(a => a.client.id === clientId && a.start_time === slot)
+    return store.dayAppointments.filter(a => a.client?.id === clientId && a.start_time === slot)
 }
 function isSlotAvailable(slot) {
     const found = store.availableSlots.find(s => s.time === slot)
@@ -203,11 +210,13 @@ function onApptUpdated(updated) {
     showDetail.value = false
 }
 
-onMounted(() => { store.fetchDay(date.value); store.subscribeRealtime() })
+onMounted(() => { 
+    store.fetchDay(date.value)
+    store.subscribeRealtime() 
+})
 </script>
 
 <style scoped>
-/* Mismos estilos que AppointmentDayView.vue */
 .day-view { display: flex; flex-direction: column; height: 100%; }
 .day-view__body { flex: 1; overflow: hidden; display: flex; flex-direction: column; padding: 16px 24px 24px; gap: 16px; }
 .day-timeline-wrapper { flex: 1; overflow: hidden; border-radius: 18px; background: linear-gradient(135deg, rgba(180,180,160,0.35) 0%, rgba(160,180,140,0.25) 40%, rgba(200,160,140,0.25) 70%, rgba(160,140,180,0.25) 100%); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.15); display: flex; flex-direction: column; }
@@ -329,16 +338,6 @@ onMounted(() => { store.fetchDay(date.value); store.subscribeRealtime() })
 
 @media (max-width: 767px) {
     .day-view__body { padding: 8px 12px 12px; gap: 8px; }
-    .day-col-header { flex-direction: row; padding: 8px 10px; gap: 8px; min-width: 160px; align-items: center; justify-content: flex-start; }
-    .day-col-avatar { width: 32px; height: 32px; flex-shrink: 0; }
-    .day-col-name   { font-size: 0.75rem; text-align: left; }
-    .day-col-count  { font-size: 0.62rem; margin-left: auto; }
-    .day-timeline-header__spacer { width: 50px; }
-    .day-timeline__hours { width: 50px; }
-    .day-timeline__hour  { font-size: 0.65rem; }
-    .day-slot { height: 48px; }
-
-    /* En mobile ocultamos el timeline por horas y mostramos la lista de tarjetas */
     .day-timeline-wrapper { display: none; }
     .day-mobile-list { display: flex; }
 }

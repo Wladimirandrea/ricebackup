@@ -2,7 +2,7 @@ import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
 import tailwindcss from '@tailwindcss/vite';
 import vue from '@vitejs/plugin-vue';
-import path from 'path';  // ← ¿tienes esta línea?
+import path from 'path';
 
 export default defineConfig({
     plugins: [
@@ -21,8 +21,10 @@ export default defineConfig({
     server: {
         host: '0.0.0.0',
         port: 5173,
+        strictPort: true,
+        cors: true,
         hmr: {
-            host: '192.168.12.125',  
+            host: '192.168.12.125',
         },
         watch: {
             ignored: ['**/storage/framework/views/**'],

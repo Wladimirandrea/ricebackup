@@ -4,8 +4,8 @@
         <AppTopbar
             :title="$t('appointments.title')"
             :crumbs="[
-                { label: $t('users.crumbs.dashboard'), icon: 'fa-house',     route: 'admin.dashboard' },
-                { label: $t('appointments.title'),      icon: 'fa-calendar-check' },
+                { label: $t('users.crumbs.dashboard'), icon: 'fa-house', route: 'admin.dashboard' },
+                { label: $t('appointments.title'), icon: 'fa-calendar-check' },
             ]"
             :actions="[]"
         />
@@ -17,23 +17,31 @@
 </template>
 
 <script setup>
-import { onMounted } from 'vue'
+import { onMounted, onUnmounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { useAppointmentStore } from '@/stores/appointmentStore'
 import AppointmentCalendar from '@/components/appointments/AppointmentCalendar.vue'
 import AppTopbar from '@/components/layout/AppTopbar.vue'
-import { useRouter } from 'vue-router'
-const router = useRouter()
 
+const router = useRouter()
 const store = useAppointmentStore()
 
-
-
 function onDayClick({ day, month, year }) {
-    const date = `${year}-${String(month).padStart(2,'0')}-${String(day).padStart(2,'0')}`
+    const formattedMonth = String(month).padStart(2, '0')
+    const formattedDay = String(day).padStart(2, '0')
+    const date = `${year}-${formattedMonth}-${formattedDay}`
+
     router.push({ name: 'admin.appointments.day', params: { date } })
 }
 
-onMounted(() => { store.fetchCalendar(); store.subscribeRealtime() })
+onMounted(() => {
+    store.fetchCalendar()
+    store.subscribeRealtime()
+})
+
+onUnmounted(() => {
+    store.unsubscribeRealtime()
+})
 </script>
 
 <style scoped>
@@ -49,6 +57,8 @@ onMounted(() => { store.fetchCalendar(); store.subscribeRealtime() })
 }
 
 @media (max-width: 767px) {
-    .appt-view__body { padding: 12px; }
+    .appt-view__body {
+        padding: 12px;
+    }
 }
 </style>

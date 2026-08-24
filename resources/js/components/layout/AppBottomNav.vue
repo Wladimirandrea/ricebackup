@@ -30,8 +30,9 @@ const managerItems = computed(() => [
 
 const clientItems = computed(() => [
     { label: t('nav.home'), icon: 'fa-house', route: 'client.dashboard', color: '#4a90e2' },
-    { label: t('nav.schedule'), icon: 'fa-calendar-check', route: 'client.appointments', color: '#2dd4bf' },
-    { label: t('nav.profile'), icon: 'fa-user-tie', route: 'client.dashboard', color: '#a78bfa' },
+    { label: t('nav.schedule'), icon: 'fa-calendar-check', route: 'client.appointments.list', color: '#2dd4bf' },
+    { label: t('appointments.new'), icon: 'fa-calendar-plus', route: 'client.appointments.create', color: '#fb923c' },
+    
 ])
 
 const items = computed(() =>

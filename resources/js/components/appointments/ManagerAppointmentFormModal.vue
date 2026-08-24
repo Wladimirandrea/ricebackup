@@ -2,11 +2,11 @@
 <template>
     <Teleport to="body">
         <Transition name="modal-fade">
-            <div v-if="modelValue" class="af-backdrop" @click.self="$emit('update:modelValue', false)">
+            <div v-if="modelValue" class="af-backdrop" @click.self="closeModal">
                 <div class="af-modal">
                     <div class="af-header">
                         <h3 class="af-title">{{ $t('appointments.new') }}</h3>
-                        <button class="af-close" @click="$emit('update:modelValue', false)">X</button>
+                        <button type="button" class="af-close" @click="closeModal">✕</button>
                     </div>
                     <div class="af-body">
 
@@ -14,14 +14,21 @@
                         <div class="af-section">
                             <label class="af-section__label">{{ $t('appointments.client') }}</label>
                             <div class="af-avatars">
-                                <div v-for="c in store.myClients" :key="c.id" class="af-avatar-item"
+                                <div
+                                    v-for="c in store.myClients"
+                                    :key="c.id"
+                                    class="af-avatar-item"
                                     :class="{ 'af-avatar-item--selected': form.client_id === c.id }"
-                                    @click="form.client_id = c.id">
+                                    @click="form.client_id = c.id"
+                                >
                                     <div class="af-avatar-ring">
-                                        <img :src="c.profile_image_url ?? defaultAvatar" :alt="c.name"
-                                            @error="onImgError" />
+                                        <img
+                                            :src="c.profile_image_url ?? defaultAvatar"
+                                            :alt="c.name"
+                                            @error="onImgError"
+                                        />
                                     </div>
-                                    <span class="af-avatar-name">{{ c.name.split(' ')[0] }}</span>
+                                    <span class="af-avatar-name">{{ getFirstName(c.name) }}</span>
                                 </div>
                             </div>
                         </div>
@@ -42,8 +49,12 @@
                                 {{ $t('appointments.noSlots') }}
                             </p>
                             <select v-else v-model="form.start_time" class="af-select">
-                                <option v-for="slot in store.formSlots" :key="slot.time" :value="slot.time"
-                                    :disabled="!slot.available">
+                                <option
+                                    v-for="slot in store.formSlots"
+                                    :key="slot.time"
+                                    :value="slot.time"
+                                    :disabled="!slot.available"
+                                >
                                     {{ slot.time }}
                                     {{ slot.day_off ? '— 🌙' : '' }}
                                     {{ slot.cm_taken ? '— ' + $t('appointments.taken') : '' }}
@@ -55,9 +66,14 @@
                         <div class="af-section">
                             <label class="af-section__label">{{ $t('appointments.status') }}</label>
                             <div class="af-status-row">
-                                <button v-for="s in ['pending', 'confirmed']" :key="s" class="af-status-btn"
+                                <button
+                                    v-for="s in ['pending', 'confirmed']"
+                                    :key="s"
+                                    type="button"
+                                    class="af-status-btn"
                                     :class="[`af-status-btn--${s}`, { 'af-status-btn--active': form.status === s }]"
-                                    @click="form.status = s">
+                                    @click="form.status = s"
+                                >
                                     {{ $t(`appointments.${s}`) }}
                                 </button>
                             </div>
@@ -73,10 +89,10 @@
                     </div>
 
                     <div class="af-footer">
-                        <button class="af-btn af-btn--cancel" @click="$emit('update:modelValue', false)">
+                        <button type="button" class="af-btn af-btn--cancel" @click="closeModal">
                             {{ $t('common.cancel') }}
                         </button>
-                        <button class="af-btn af-btn--save" :disabled="saving" @click="save">
+                        <button type="button" class="af-btn af-btn--save" :disabled="saving" @click="save">
                             <span v-if="saving" class="af-spinner" />
                             <span v-else>{{ $t('common.save') }}</span>
                         </button>
@@ -88,7 +104,7 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted } from 'vue'   // ← onMounted agregado
+import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useManagerAppointmentStore } from '@/stores/managerAppointmentStore'
 
@@ -100,30 +116,59 @@ const props = defineProps({
     modelValue: Boolean,
     date: { type: String, default: '' },
 })
+
 const emit = defineEmits(['update:modelValue', 'created'])
 
 const saving = ref(false)
 const errorMsg = ref('')
-const form = ref({ client_id: '', date: props.date, start_time: '', status: 'pending', notes: '' })
+const form = ref({ client_id: '', date: '', start_time: '', status: 'pending', notes: '' })
 
-// Carga clientes si el store aún no los tiene
-onMounted(async () => {
-    if (store.myClients.length === 0) {
-        await store.fetchClients()
+// Resetear y preparar datos al abrir el modal
+watch(() => props.modelValue, async (isOpen) => {
+    if (isOpen) {
+        errorMsg.value = ''
+        form.value = {
+            client_id: '',
+            date: props.date || new Date().toISOString().split('T')[0],
+            start_time: '',
+            status: 'pending',
+            notes: ''
+        }
+
+        if (store.myClients.length === 0) {
+            await store.fetchClients()
+        }
+
+        if (form.value.date) {
+            await loadSlotsForDate(form.value.date)
+        }
     }
 })
 
-// Fallback si la imagen falla al cargar
+// Reactividad ante el cambio de fecha dentro del formulario
+watch(() => form.value.date, async (newDate) => {
+    if (newDate && props.modelValue) {
+        await loadSlotsForDate(newDate)
+    }
+})
+
+async function loadSlotsForDate(targetDate) {
+    await store.fetchSlots(targetDate)
+    const firstAvailable = store.formSlots.find(s => s.available)
+    form.value.start_time = firstAvailable?.time ?? ''
+}
+
+function getFirstName(fullName) {
+    return fullName ? fullName.split(' ')[0] : ''
+}
+
 function onImgError(e) {
     e.target.src = defaultAvatar
 }
 
-watch(() => form.value.date, async (date) => {
-    if (!date) return
-    await store.fetchSlots(date)
-    const first = store.formSlots.find(s => s.available)
-    form.value.start_time = first?.time ?? ''
-}, { immediate: !!props.date })
+function closeModal() {
+    emit('update:modelValue', false)
+}
 
 async function save() {
     errorMsg.value = ''
@@ -131,12 +176,13 @@ async function save() {
         errorMsg.value = t('appointments.requiredFields')
         return
     }
+
     saving.value = true
     const result = await store.createAppointment({ ...form.value })
     saving.value = false
 
     if (result.success) {
-        form.value = { client_id: '', date: props.date, start_time: '', status: 'pending', notes: '' }
+        closeModal()
         emit('created')
     } else {
         errorMsg.value = result.message ?? t('appointments.error')
@@ -144,7 +190,7 @@ async function save() {
 }
 </script>
 
-<style>
+<style scoped>
 .af-backdrop {
     position: fixed;
     inset: 0;

@@ -248,7 +248,14 @@
     "confirmCancel": "Are you sure you want to cancel this appointment?",
     "cancelledSuccess": "Appointment cancelled successfully.",
     "confirmCancelTitle": "Cancel appointment?",
-    "confirmCancelBtn": "Yes, cancel appointment"
+    "confirmCancelBtn": "Yes, cancel appointment",
+    "newSubtitle": "Pick a day, then a time for your appointment",
+    "hasAppointmentHint": "You already have an appointment that day",
+    "changeDate": "Change date",
+    "pickAnotherDay": "Pick another day",
+    "notesPlaceholder": "Briefly describe the reason for your appointment",
+    "submitting": "Scheduling...",
+    "submit": "Schedule appointment"
   },
   "notifications": {
     "title": "Notifications",

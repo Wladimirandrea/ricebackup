@@ -35,7 +35,7 @@
 
             <!-- Lista -->
             <TransitionGroup v-else name="row-fade" tag="div" class="al-list">
-                <div v-for="a in store.appointments" :key="a.id" class="al-row" :class="`al-row--${a.status}`">
+                <div v-for="a in sortedAppointments" :key="a.id" class="al-row" :class="`al-row--${a.status}`">
                     <img :src="a.case_manager?.profile_image_url" class="al-row__avatar" :alt="a.case_manager?.name" />
                     <div class="al-row__info">
                         <span class="al-row__name">{{ a.case_manager?.name || '—' }}</span>
@@ -56,9 +56,8 @@
         </div>
 
         <ConfirmModal v-model="showCancelModal" :title="$t('appointments.confirmCancelTitle')"
-    :message="$t('appointments.confirmCancel')" :confirm-label="$t('appointments.confirmCancelBtn')"
-    :cancel-label="$t('common.no')" variant="danger" :loading="cancelling"
-    @confirm="doCancel" />
+            :message="$t('appointments.confirmCancel')" :confirm-label="$t('appointments.confirmCancelBtn')"
+            :cancel-label="$t('common.no')" variant="danger" :loading="cancelling" @confirm="doCancel" />
     </div>
 </template>
 
@@ -78,12 +77,21 @@ const cancelling = ref(false)
 const appointmentToCancel = ref(null)
 
 const tabs = computed(() => [
-    { key: 'all', label: 'appointments.all' },
     { key: 'pending', label: 'appointments.pending' },
     { key: 'confirmed', label: 'appointments.confirmed' },
     { key: 'completed', label: 'appointments.completed' },
     { key: 'cancelled', label: 'appointments.cancelled' },
+    { key: 'all', label: 'appointments.all' },
 ])
+
+// Lista ordenada por fecha/hora, más reciente primero
+const sortedAppointments = computed(() => {
+    return [...store.appointments].sort((a, b) => {
+        const dateCompare = a.date.localeCompare(b.date)
+        if (dateCompare !== 0) return dateCompare
+        return a.start_time.localeCompare(b.start_time)
+    })
+})
 
 function openCancelModal(appt) {
     appointmentToCancel.value = appt

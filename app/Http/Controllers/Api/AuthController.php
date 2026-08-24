@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Http\Resources\Api\UserResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -12,7 +13,17 @@ class AuthController extends Controller
 {
     public function login(LoginRequest $request): JsonResponse
     {
-        if (!Auth::attempt($request->only('email', 'password'))) {
+        $credentials = array_merge($request->only('email', 'password'), ['is_active' => true]);
+
+        if (!Auth::attempt($credentials)) {
+            $userExists = \App\Models\User::where('email', $request->email)->first();
+
+            if ($userExists && !$userExists->is_active) {
+                return response()->json([
+                    'message' => 'Tu cuenta ha sido desactivada.',
+                ], 403);
+            }
+
             return response()->json([
                 'message' => 'Correo o contraseña incorrectos.',
             ], 401);
@@ -21,13 +32,6 @@ class AuthController extends Controller
         /** @var \App\Models\User $user */
         $user = Auth::user();
 
-        if (!$user->is_active) {
-            Auth::logout();
-            return response()->json([
-                'message' => 'Tu cuenta ha sido desactivada.',
-            ], 403);
-        }
-
         $user->tokens()->delete();
 
         $token = $user->createToken('auth_token')->plainTextToken;
@@ -35,14 +39,7 @@ class AuthController extends Controller
         return response()->json([
             'access_token' => $token,
             'token_type'   => 'Bearer',
-            'user'         => [
-                'id'                => $user->id,
-                'name'              => $user->name,
-                'email'             => $user->email,
-                'role'              => $user->role,
-                'profile_image_url' => $user->profile_image_url,
-                'is_active'         => $user->is_active,
-            ],
+            'user'         => new UserResource($user),
         ], 200);
     }
 
@@ -57,17 +54,8 @@ class AuthController extends Controller
 
     public function me(Request $request): JsonResponse
     {
-        $user = $request->user();
-
         return response()->json([
-            'user' => [
-                'id'                => $user->id,
-                'name'              => $user->name,
-                'email'             => $user->email,
-                'role'              => $user->role,
-                'profile_image_url' => $user->profile_image_url,
-                'is_active'         => $user->is_active,
-            ],
+            'user' => new UserResource($request->user()),
         ], 200);
     }
 }

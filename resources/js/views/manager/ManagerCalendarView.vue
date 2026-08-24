@@ -1,29 +1,45 @@
 <!-- resources/js/views/manager/ManagerCalendarView.vue -->
 <template>
     <div class="mc-view">
-        <AppTopbar :title="$t('appointments.title')" :crumbs="[
-            { label: $t('users.crumbs.dashboard'), icon: 'fa-house', route: 'manager.dashboard' },
-            { label: $t('appointments.title'), icon: 'fa-calendar-check' },
-        ]" :actions="[
+        <AppTopbar
+            :title="$t('appointments.title')"
+            :crumbs="[
+                { label: $t('users.crumbs.dashboard'), icon: 'fa-house', route: 'manager.dashboard' },
+                { label: $t('appointments.title'), icon: 'fa-calendar-check' },
+            ]"
+            :actions="[
                 { label: $t('appointments.new'), icon: 'fa-plus', type: 'primary', emit: 'new' }
-            ]" @action="onTopbarAction" />
+            ]"
+            @action="onTopbarAction"
+        />
 
         <div class="mc-view__body">
             <!-- Filtro clientes -->
             <div class="mc-client-filter">
-                <div class="mc-client-item" :class="{ 'mc-client-item--active': store.selectedClientFilter === null }"
-                    @click="store.setClientFilter(null)">
+                <div
+                    class="mc-client-item"
+                    :class="{ 'mc-client-item--active': store.selectedClientFilter === null }"
+                    @click="store.setClientFilter(null)"
+                >
                     <div class="mc-client-avatar mc-client-avatar--all">
                         <i class="fa-solid fa-users" />
                     </div>
                     <span class="mc-client-name">{{ $t('appointments.all') }}</span>
                 </div>
 
-                <div v-for="client in store.myClients" :key="client.id" class="mc-client-item"
+                <div
+                    v-for="client in store.myClients"
+                    :key="client.id"
+                    class="mc-client-item"
                     :class="{ 'mc-client-item--active': store.selectedClientFilter === client.id }"
-                    @click="store.setClientFilter(client.id)">
+                    @click="store.setClientFilter(client.id)"
+                >
                     <div class="mc-client-avatar">
-                        <img :src="client.profile_image_url ?? defaultAvatar" />
+                        <img
+                            :src="client.profile_image_url ?? defaultAvatar"
+                            :alt="client.name"
+                            @error="onImgError"
+                        />
                     </div>
                     <span class="mc-client-name">{{ client.name.split(' ')[0] }}</span>
                 </div>
@@ -34,12 +50,16 @@
         </div>
 
         <!-- Modal nueva cita -->
-        <ManagerAppointmentFormModal v-model="showModal" :date="modalDate" @created="onAppointmentCreated" />
+        <ManagerAppointmentFormModal
+            v-model="showModal"
+            :date="modalDate"
+            @created="onAppointmentCreated"
+        />
     </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useManagerAppointmentStore } from '@/stores/managerAppointmentStore'
 import AppTopbar from '@/components/layout/AppTopbar.vue'
@@ -65,7 +85,10 @@ function onTopbarAction(action) {
 }
 
 function onDayClick({ day, month, year }) {
-    const date = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`
+    const formattedMonth = String(month).padStart(2, '0')
+    const formattedDay = String(day).padStart(2, '0')
+    const date = `${year}-${formattedMonth}-${formattedDay}`
+
     router.push({ name: 'manager.appointments.day', params: { date } })
 }
 
@@ -74,7 +97,17 @@ function onAppointmentCreated() {
     store.fetchCalendar()
 }
 
-onMounted(async () => { await store.fetchClients(); await store.fetchCalendar(); store.subscribeRealtime() })
+onMounted(async () => {
+    await Promise.all([
+        store.fetchClients(),
+        store.fetchCalendar()
+    ])
+    store.subscribeRealtime()
+})
+
+onUnmounted(() => {
+    store.unsubscribeRealtime()
+})
 </script>
 
 <style scoped>

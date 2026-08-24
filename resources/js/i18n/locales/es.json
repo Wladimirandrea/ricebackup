@@ -248,7 +248,14 @@
     "confirmCancel": "¿Estás seguro de que deseas cancelar esta cita?",
     "cancelledSuccess": "Cita cancelada exitosamente.",
     "confirmCancelTitle": "¿Cancelar cita?",
-    "confirmCancelBtn": "Sí, cancelar cita"
+    "confirmCancelBtn": "Sí, cancelar cita",
+    "newSubtitle": "Elige un día y luego un horario para tu cita",
+    "hasAppointmentHint": "Ya tienes una cita agendada ese día",
+    "changeDate": "Cambiar fecha",
+    "pickAnotherDay": "Elegir otro día",
+    "notesPlaceholder": "Describe brevemente el motivo de tu cita",
+    "submitting": "Agendando...",
+    "submit": "Agendar cita"
   },
   "notifications": {
     "title": "Notificaciones",

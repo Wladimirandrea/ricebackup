@@ -78,6 +78,21 @@ const actions = computed(() => [
     { label: t('users.create'), icon: 'fa-plus', type: 'primary', emit: 'create' },
 ])
 
+function roleIcon(role) {
+    const roleMap = {
+        admin: 'fa-user-tie',
+        casemanager: 'fa-briefcase',
+        cliente: 'fa-child-reaching',
+        client: 'fa-child-reaching'
+    }
+    const key = (role || '')
+        .toString()
+        .toLowerCase()
+        .trim()
+        .replace(/[\s_-]/g, '') // quita espacios, guiones y guiones bajos
+    return roleMap[key] || 'fa-crown'
+}
+
 async function fetchUsers(silent = false) {
     if (!silent) loading.value = true
     try {
@@ -335,14 +350,16 @@ watch(showMobileBookModal, (val) => {
                 <div class="filters-container">
                     <button v-for="role in availableRoles" :key="role" class="filter-btn"
                         :class="{ active: selectedRole === role }" @click="filterByRole(role)">
-                        {{ role === 'all' ? t('users.filters.all', 'Todos') : role.charAt(0).toUpperCase() + role.slice(1) }}
+                        {{ role === 'all' ? t('users.filters.all', 'Todos') : role.charAt(0).toUpperCase() +
+                            role.slice(1) }}
                     </button>
                 </div>
 
                 <div class="search-container">
                     <div class="search-input-wrapper">
                         <i class="fa-solid fa-magnifying-glass"></i>
-                        <input type="text" v-model="searchQuery" :placeholder="t('users.search_placeholder', 'Buscar por nombre o rol...')"
+                        <input type="text" v-model="searchQuery"
+                            :placeholder="t('users.search_placeholder', 'Buscar por nombre o rol...')"
                             class="search-input" />
                         <button v-if="searchQuery" @click="searchQuery = ''" class="clear-search">
                             <i class="fa-solid fa-xmark"></i>
@@ -360,13 +377,19 @@ watch(showMobileBookModal, (val) => {
                         </button>
                         <div class="carousel-track">
                             <div v-for="(member, index) in teamMembers" :key="member.id || index" class="card"
-                                :class="{ 'card-placeholder': member.isPlaceholder }"
-                                :data-index="index" @click="handleCardClick(index)">
-                                <img :src="member.img" :alt="member.name">
-                                <div v-if="member.isPlaceholder" class="placeholder-label">
-                                    {{ member.name }}
+                                :class="{ 'card-placeholder': member.isPlaceholder }" :data-index="index"
+                                @click="handleCardClick(index)">
+                                <div class="card-image-container">
+                                    <div class="crown-container" v-if="!member.isPlaceholder">
+                                        <div class="role-icon-circle">
+                                            <i :class="['fa-solid', roleIcon(member.role), 'crown-icon']"></i>
+                                        </div>
+                                    </div>
+                                    <img :src="member.img" :alt="member.name" class="card-image">
+                                    <h2 class="card-title">{{ member.name }}</h2>
                                 </div>
                             </div>
+
                         </div>
                         <button class="nav-arrow down" @click="resetAutoplay(() => updateCarousel(currentIndex + 1))">
                             <img src="https://ik.imagekit.io/gopichakradhar/icons/down.png?updatedAt=1754290523249"
@@ -388,7 +411,8 @@ watch(showMobileBookModal, (val) => {
                                     </div>
                                     <div class="foto-texto">
                                         <span class="nombre">{{ activeMember.name }}</span>
-                                        <span class="rol" v-if="!activeMember.isPlaceholder">{{ t('users.role_label', 'Rol:') }} {{ activeMember.role }}</span>
+                                        <span class="rol" v-if="!activeMember.isPlaceholder">{{ t('users.role_label',
+                                            'Rol:') }} {{ activeMember.role }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -419,7 +443,8 @@ watch(showMobileBookModal, (val) => {
                                         </div>
                                         <div class="info-item" v-if="!activeMember.isPlaceholder">
                                             <strong>{{ t('users.book.status_label', 'Estado:') }}</strong>
-                                            <span class="badge-activo">{{ t('users.book.active_status', 'Activo') }}</span>
+                                            <span class="badge-activo">{{ t('users.book.active_status', 'Activo')
+                                            }}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -464,7 +489,8 @@ watch(showMobileBookModal, (val) => {
                                 </div>
                                 <div class="foto-texto">
                                     <span class="nombre">{{ activeMember.name }}</span>
-                                    <span class="rol" v-if="!activeMember.isPlaceholder">{{ t('users.role_label', 'Rol:') }} {{ activeMember.role }}</span>
+                                    <span class="rol" v-if="!activeMember.isPlaceholder">{{ t('users.role_label',
+                                        'Rol:') }} {{ activeMember.role }}</span>
                                 </div>
                             </div>
                         </div>
@@ -500,8 +526,7 @@ watch(showMobileBookModal, (val) => {
                                 </div>
                             </div>
 
-                            <div class="acciones-container"
-                                v-if="!activeMember.id.toString().includes('placeholder')">
+                            <div class="acciones-container" v-if="!activeMember.id.toString().includes('placeholder')">
                                 <button class="btn-accion btn-editar" :title="t('users.edit', 'Editar')"
                                     @click="editUser(activeMember)">
                                     <i class="fa-solid fa-pen"></i>
@@ -683,7 +708,8 @@ watch(showMobileBookModal, (val) => {
     gap: 60px;
     align-items: center;
     justify-content: center;
-    margin: 50px auto 0 auto; /* <- Aquí aumentamos el espacio superior en PC */
+    margin: 50px auto 0 auto;
+    /* <- Aquí aumentamos el espacio superior en PC */
     box-sizing: border-box;
 }
 
@@ -782,25 +808,79 @@ watch(showMobileBookModal, (val) => {
     position: absolute;
     width: 200px;
     height: 215px;
-    background: white;
+    background-color: #ffffff;
     border-radius: 20px;
-    overflow: hidden;
+    padding: 8px;
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
     transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     cursor: pointer;
 }
 
-.card img {
+.card-image-container {
+    position: relative;
     width: 100%;
     height: 100%;
-    object-fit: contain;
-    background-color: #f8f9fa;
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+.card-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
     transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-.card.card-placeholder img {
-    height: 72%;
+.card.card-placeholder .card-image {
     object-fit: cover;
+}
+
+.crown-container {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    z-index: 2;
+}
+
+.role-icon-circle {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(3px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.crown-icon {
+    font-size: 1rem;
+    color: #ffffff;
+    filter: none;
+}
+
+.card-title {
+    position: absolute;
+    bottom: 10px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    color: #ffffff;
+    font-family: 'Great Vibes', cursive;
+    font-size: 1.3rem;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    text-shadow:
+        0px 2px 6px rgba(0, 0, 0, 0.9),
+        0px 0px 10px rgba(0, 0, 0, 0.7);
+    z-index: 2;
+    padding: 0 6px;
+    line-height: 1.1;
 }
 
 .placeholder-label {
@@ -1163,6 +1243,7 @@ watch(showMobileBookModal, (val) => {
         transform: scale(0.8);
         opacity: 0;
     }
+
     to {
         transform: scale(1);
         opacity: 1;
@@ -1179,7 +1260,8 @@ watch(showMobileBookModal, (val) => {
         height: auto;
         gap: 20px;
         max-width: 100%;
-        margin-top: 10px; /* Separación más compacta en móvil */
+        margin-top: 10px;
+        /* Separación más compacta en móvil */
     }
 
     .carousel-section {

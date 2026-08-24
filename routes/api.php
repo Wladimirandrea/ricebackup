@@ -100,5 +100,7 @@ Route::middleware(['auth:sanctum', 'role:client'])->prefix('client')->group(func
     Route::get('/appointments/calendar', [ClientAppointmentController::class, 'calendar']);
     Route::get('/appointments/day',      [ClientAppointmentController::class, 'day']);
     Route::get('/appointments/list', [ClientAppointmentController::class, 'index']);
+    Route::get('appointments/slots', [ClientAppointmentController::class, 'slots']);
+    Route::post('appointments', [ClientAppointmentController::class, 'store']);
     Route::patch('/appointments/{appointment}/status', [ClientAppointmentController::class, 'updateStatus']);
 });

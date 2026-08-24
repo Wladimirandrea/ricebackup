@@ -1,13 +1,11 @@
-// resources/js/stores/appointmentStore.js
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import api from '@/plugins/axios'
 import echo from '@/plugins/echo'
 import { useAuthStore } from '@/stores/auth'
 
-
 export const useAppointmentStore = defineStore('appointment', () => {
-    // ── Calendar ──────────────────────────────────────────
+    // ── Calendar state ──────────────────────────────────────────
     const calendar = ref({})
     const loading = ref(false)
     const error = ref(null)
@@ -19,7 +17,7 @@ export const useAppointmentStore = defineStore('appointment', () => {
     const formSlots = ref([])
     const loadingSlots = ref(false)
 
-    // ── Day view ──────────────────────────────────────────
+    // ── Day view state ──────────────────────────────────────────
     const dayAppointments = ref([])
     const dayCaseManagers = ref([])
     const selectedDate = ref(null)
@@ -32,11 +30,11 @@ export const useAppointmentStore = defineStore('appointment', () => {
 
     function subscribeRealtime() {
         if (subscribedRealtime) return
-        subscribedRealtime = true
 
         const auth = useAuthStore()
-        const user = auth.user
-        if (!user) return
+        if (!auth.user) return
+
+        subscribedRealtime = true
 
         echo
             .channel('appointments')
@@ -44,30 +42,39 @@ export const useAppointmentStore = defineStore('appointment', () => {
             .listen('.appointment.status-updated', handleRealtimeStatusUpdate)
     }
 
+    function unsubscribeRealtime() {
+        if (!subscribedRealtime) return
+        echo.leaveChannel('appointments')
+        subscribedRealtime = false
+    }
+
     function handleRealtimeCreated(data) {
         const appt = data.appointment ?? data
         const dateKey = appt.date
-        if (dateKey) {
+
+        // Evitar duplicar contador si la cita ya existe localmente
+        const existsInDay = dayAppointments.value.some(a => a.id === appt.id)
+
+        if (dateKey && !existsInDay) {
             if (!calendar.value[dateKey]) {
                 calendar.value[dateKey] = { pending: 0, confirmed: 0, completed: 0, cancelled: 0, total: 0 }
             }
-            if (calendar.value[dateKey][appt.status] !== undefined) calendar.value[dateKey][appt.status]++
+            if (calendar.value[dateKey][appt.status] !== undefined) {
+                calendar.value[dateKey][appt.status]++
+            }
             calendar.value[dateKey].total++
         }
 
-        if (selectedDate.value && dateKey === selectedDate.value) {
-            const exists = dayAppointments.value.some(a => a.id === appt.id)
-            if (!exists) {
-                dayAppointments.value.push(appt)
-                dayAppointments.value.sort((a, b) => a.start_time.localeCompare(b.start_time))
-                const slotIdx = availableSlots.value.findIndex(s => s.time === appt.start_time)
-                if (slotIdx !== -1) availableSlots.value[slotIdx].available = false
+        if (selectedDate.value && dateKey === selectedDate.value && !existsInDay) {
+            dayAppointments.value.push(appt)
+            dayAppointments.value.sort((a, b) => a.start_time.localeCompare(b.start_time))
 
-                const newCM = appt.case_manager
-                if (newCM) {
-                    const alreadyExists = dayCaseManagers.value.some(cm => cm.id === newCM.id)
-                    if (!alreadyExists) dayCaseManagers.value.push(newCM)
-                }
+            const slotIdx = availableSlots.value.findIndex(s => s.time === appt.start_time)
+            if (slotIdx !== -1) availableSlots.value[slotIdx].available = false
+
+            const newCM = appt.case_manager
+            if (newCM && !dayCaseManagers.value.some(cm => cm.id === newCM.id)) {
+                dayCaseManagers.value.push(newCM)
             }
         }
     }
@@ -82,6 +89,7 @@ export const useAppointmentStore = defineStore('appointment', () => {
 
         const idx = dayAppointments.value.findIndex(a => a.id === data.id)
         if (idx === -1) return
+
         const appt = dayAppointments.value[idx]
         const prevStatus = appt.status
         appt.status = data.status
@@ -102,6 +110,7 @@ export const useAppointmentStore = defineStore('appointment', () => {
         error.value = null
         const m = month ?? currentMonth.value
         const y = year ?? currentYear.value
+
         try {
             const { data } = await api.get('/admin/appointments/calendar', {
                 params: { month: m, year: y }
@@ -142,18 +151,18 @@ export const useAppointmentStore = defineStore('appointment', () => {
         loadingDay.value = true
         selectedDate.value = date
         selectedManager.value = null
+
         try {
             const { data } = await api.get('/admin/appointments/day', { params: { date } })
             dayAppointments.value = data.appointments
             dayCaseManagers.value = data.case_managers
             daySchedule.value = data.schedule
             availableSlots.value = data.available_slots ?? []
-        } catch (e) {
+        } catch {
             dayAppointments.value = []
             dayCaseManagers.value = []
             availableSlots.value = []
             daySchedule.value = { is_working: false, start_time: null, end_time: null }
-
         } finally {
             loadingDay.value = false
         }
@@ -162,24 +171,29 @@ export const useAppointmentStore = defineStore('appointment', () => {
     async function createAppointment(payload) {
         try {
             const { data } = await api.post('/admin/appointments', payload)
-            dayAppointments.value.push(data.appointment)
-            dayAppointments.value.sort((a, b) => a.start_time.localeCompare(b.start_time))
+            
+            // Si la cita pertenece al día seleccionado actualmente, la añadimos al listado
+            if (selectedDate.value === data.appointment.date) {
+                dayAppointments.value.push(data.appointment)
+                dayAppointments.value.sort((a, b) => a.start_time.localeCompare(b.start_time))
+
+                const slotIdx = availableSlots.value.findIndex(s => s.time === payload.start_time)
+                if (slotIdx !== -1) availableSlots.value[slotIdx].available = false
+
+                const newCM = data.appointment.case_manager
+                if (newCM && !dayCaseManagers.value.some(cm => cm.id === newCM.id)) {
+                    dayCaseManagers.value.push(newCM)
+                }
+            }
 
             const key = payload.date
             if (!calendar.value[key]) {
                 calendar.value[key] = { pending: 0, confirmed: 0, completed: 0, cancelled: 0, total: 0 }
             }
-            calendar.value[key][payload.status]++
+            if (calendar.value[key][payload.status] !== undefined) {
+                calendar.value[key][payload.status]++
+            }
             calendar.value[key].total++
-
-            const slotIdx = availableSlots.value.findIndex(s => s.time === payload.start_time)
-            if (slotIdx !== -1) availableSlots.value[slotIdx].available = false
-
-            const newCM = data.appointment.case_manager
-            const alreadyExists = dayCaseManagers.value.some(cm => cm.id === newCM.id)
-            if (!alreadyExists) dayCaseManagers.value.push(newCM)
-
-
 
             return { success: true, appointment: data.appointment }
         } catch (e) {
@@ -194,12 +208,12 @@ export const useAppointmentStore = defineStore('appointment', () => {
         try {
             await api.patch(`/admin/appointments/${id}/status`, { status })
             const idx = dayAppointments.value.findIndex(a => a.id === id)
+
             if (idx !== -1) {
                 const appt = dayAppointments.value[idx]
                 const prevStatus = appt.status
                 appt.status = status
 
-                // actualizar contadores del calendario mensual
                 const dateKey = appt.date ?? selectedDate.value
                 if (dateKey && calendar.value[dateKey]) {
                     if (calendar.value[dateKey][prevStatus] !== undefined) calendar.value[dateKey][prevStatus]--
@@ -225,10 +239,14 @@ export const useAppointmentStore = defineStore('appointment', () => {
         try {
             const { data } = await api.put(`/admin/appointments/${id}`, payload)
             const idx = dayAppointments.value.findIndex(a => a.id === id)
+
             if (idx !== -1) {
                 dayAppointments.value[idx].start_time = data.appointment.start_time
                 dayAppointments.value[idx].end_time = data.appointment.end_time
                 dayAppointments.value[idx].date = data.appointment.date
+
+                // Reordenar para mantener consistencia temporal en la vista del día
+                dayAppointments.value.sort((a, b) => a.start_time.localeCompare(b.start_time))
             }
             return { success: true, appointment: data.appointment }
         } catch (e) {
@@ -257,7 +275,6 @@ export const useAppointmentStore = defineStore('appointment', () => {
         }
     }
 
-
     return {
         calendar, loading, error,
         currentMonth, currentYear,
@@ -266,6 +283,6 @@ export const useAppointmentStore = defineStore('appointment', () => {
         loadingDay, selectedManager, daySchedule,
         fetchDay, createAppointment, updateStatus, updateAppointment,
         daysOff, availableSlots, formSlots, loadingSlots, fetchSlots,
-        subscribeRealtime,
+        subscribeRealtime, unsubscribeRealtime,
     }
 })

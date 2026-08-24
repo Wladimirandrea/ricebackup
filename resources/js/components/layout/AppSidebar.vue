@@ -33,6 +33,7 @@ const menuItems = computed(() => {
     return [
         { label: t('nav.dashboard'), icon: 'fa-house', route: 'client.dashboard' },
         { label: t('nav.appointments'), icon: 'fa-calendar-check', route: 'client.appointments.list' },
+        { label: t('appointments.new'), icon: 'fa-calendar-plus', route: 'client.appointments.create' },
     ]
 })
 

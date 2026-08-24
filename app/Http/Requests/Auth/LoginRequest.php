@@ -24,34 +24,13 @@ class LoginRequest extends FormRequest
 
     public function messages(): array
     {
-        $locale = $this->header('Accept-Language', 'es');
-        $isEnglish = str_starts_with($locale, 'en');
-
-        if ($isEnglish) {
-            return [
-                'email.required'    => 'The email address is required.',
-                'email.email'       => 'Please enter a valid email address.',
-                'password.required' => 'The password is required.',
-                'password.min'      => 'The password must be at least 8 characters.',
-            ];
-        }
+        $isEnglish = str_starts_with($this->header('Accept-Language', 'es'), 'en');
 
         return [
-            'email.required'    => 'El correo electrónico es requerido.',
-            'email.email'       => 'Por favor ingresa un correo electrónico válido.',
-            'password.required' => 'La contraseña es requerida.',
-            'password.min'      => 'La contraseña debe tener al menos 8 caracteres.',
+            'email.required'    => $isEnglish ? 'The email address is required.' : 'El correo electrónico es requerido.',
+            'email.email'       => $isEnglish ? 'Please enter a valid email address.' : 'Por favor ingresa un correo electrónico válido.',
+            'password.required' => $isEnglish ? 'The password is required.' : 'La contraseña es requerida.',
+            'password.min'      => $isEnglish ? 'The password must be at least 8 characters.' : 'La contraseña debe tener al menos 8 caracteres.',
         ];
-    }
-
-    /** Devuelve JSON en lugar de redirigir */
-    protected function failedValidation(Validator $validator): never
-    {
-        throw new HttpResponseException(
-            response()->json([
-                'message' => 'Error de validación.',
-                'errors'  => $validator->errors(),
-            ], 422)
-        );
     }
 }

@@ -8,6 +8,7 @@ use App\Models\Appointment;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Events\AppointmentStatusUpdatedEvent;
+use App\Events\AppointmentCreatedEvent;
 
 class ClientAppointmentController extends Controller
 {
@@ -31,7 +32,6 @@ class ClientAppointmentController extends Controller
         ]);
     }
 
-    /** GET /api/client/appointments/calendar?month=&year= */
     public function calendar(Request $request): JsonResponse
     {
         $month = $request->get('month', now()->month);
@@ -54,7 +54,26 @@ class ClientAppointmentController extends Controller
             ];
             foreach ($dayAppts as $a) $counts[$a->status]++;
             return $counts;
-        });
+        })->toArray();
+
+        // 🔹 NUEVO: traer los DayOff de ese mes y marcarlos en el calendario
+        $dayOffs = \App\Models\DayOff::whereMonth('date', $month)
+            ->whereYear('date', $year)
+            ->get();
+
+        foreach ($dayOffs as $off) {
+            $key = $off->date->format('Y-m-d');
+            if (!isset($calendar[$key])) {
+                $calendar[$key] = [
+                    'pending' => 0,
+                    'confirmed' => 0,
+                    'completed' => 0,
+                    'cancelled' => 0,
+                    'total' => 0,
+                ];
+            }
+            $calendar[$key]['is_day_off'] = true;
+        }
 
         return response()->json([
             'calendar' => $calendar,
@@ -163,5 +182,152 @@ class ClientAppointmentController extends Controller
         broadcast(new AppointmentStatusUpdatedEvent($appointment, $previousStatus, 'client'));
 
         return response()->json(['message' => 'Appointment cancelled successfully.']);
+    }
+
+    public function slots(Request $request): JsonResponse
+    {
+        $request->validate([
+            'date' => 'required|date_format:Y-m-d',
+        ]);
+
+        $date = $request->get('date');
+        $manager = $this->client()->caseManagers()->first();
+
+        if (!$manager) {
+            return response()->json([
+                'is_working' => false,
+                'slots'      => []
+            ]);
+        }
+
+        $carbonDate = \Carbon\Carbon::parse($date);
+
+        if ($carbonDate->isWeekend()) {
+            return response()->json([
+                'is_working' => false,
+                'slots'      => []
+            ]);
+        }
+
+        // 🔹 NUEVO: traer los DayOff registrados para esa fecha
+        $dayOffs = \App\Models\DayOff::whereDate('date', $date)->get();
+
+        $existingAppointments = Appointment::where('case_manager_id', $manager->id)
+            ->whereDate('date', $date)
+            ->whereIn('status', ['pending', 'confirmed'])
+            ->pluck('start_time')
+            ->map(fn($time) => substr($time, 0, 5))
+            ->toArray();
+
+        $slots = [];
+        $start = \Carbon\Carbon::parse('09:00');
+        $end   = \Carbon\Carbon::parse('17:00');
+        $availableCount = 0;
+
+        while ($start < $end) {
+            $timeString = $start->format('H:i');
+
+            $isPast = $carbonDate->isToday() && $timeString <= now()->format('H:i');
+
+            // 🔹 NUEVO: ¿este horario cae dentro de un DayOff?
+            $isDayOffTime = false;
+            foreach ($dayOffs as $off) {
+                $offStart = substr($off->start_time, 0, 5);
+                $offEnd   = substr($off->end_time, 0, 5);
+                if ($timeString >= $offStart && $timeString < $offEnd) {
+                    $isDayOffTime = true;
+                    break;
+                }
+            }
+
+            $hasAppointment = in_array($timeString, $existingAppointments);
+            $isAvailable = !$isPast && !$isDayOffTime && !$hasAppointment;
+
+            if ($isAvailable) {
+                $availableCount++;
+            }
+
+            $slots[] = [
+                'time'      => $timeString,
+                'available' => $isAvailable,
+            ];
+
+            $start->addMinutes(30);
+        }
+
+        // 🔹 NUEVO: si el día completo está bloqueado por DayOff, is_working = false
+        $isWorking = $availableCount > 0 || $slots === [];
+        // (si prefieres distinguir "sin horarios disponibles" de "no laborable", ver nota abajo)
+
+        return response()->json([
+            'is_working' => $availableCount > 0,
+            'slots'      => $slots,
+        ]);
+    }
+
+    public function store(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'date'       => 'required|date_format:Y-m-d|after_or_equal:today',
+            'start_time' => 'required|date_format:H:i',
+            'notes'      => 'nullable|string|max:1000',
+        ]);
+
+        $client  = $this->client();
+        $manager = $client->caseManagers()->first();
+
+        if (!$manager) {
+            return response()->json([
+                'message' => 'No tienes un gestor de caso asignado.',
+            ], 422);
+        }
+
+        $date      = $validated['date'];
+        $startTime = $validated['start_time'];
+
+        // Calcular end_time (30 min después)
+        $endTime = \Carbon\Carbon::parse($startTime)->addMinutes(30)->format('H:i');
+
+        // Verificar que no caiga dentro de un DayOff
+        $isDayOffTime = \App\Models\DayOff::whereDate('date', $date)
+            ->where('start_time', '<=', $startTime)
+            ->where('end_time', '>', $startTime)
+            ->exists();
+
+        if ($isDayOffTime) {
+            return response()->json([
+                'message' => 'Ese horario ya no está disponible.',
+                'errors'  => ['start_time' => ['Ese horario ya no está disponible.']],
+            ], 422);
+        }
+
+        // Verificar que el manager no tenga ya una cita en ese horario
+        $conflict = Appointment::where('case_manager_id', $manager->id)
+            ->whereDate('date', $date)
+            ->where('start_time', $startTime)
+            ->whereIn('status', ['pending', 'confirmed'])
+            ->exists();
+
+        if ($conflict) {
+            return response()->json([
+                'message' => 'Ese horario ya fue reservado.',
+                'errors'  => ['start_time' => ['Ese horario ya fue reservado.']],
+            ], 422);
+        }
+
+        $appointment = Appointment::create([
+            'client_id'       => $client->id,
+            'case_manager_id' => $manager->id,
+            'date'            => $date,
+            'start_time'      => $startTime,
+            'end_time'        => $endTime,
+            'status'          => 'pending',
+            'notes'           => $validated['notes'] ?? null,
+        ]);
+        broadcast(new AppointmentCreatedEvent($appointment));
+        return response()->json([
+            'message'     => 'Cita creada exitosamente.',
+            'appointment' => $appointment,
+        ], 201);
     }
 }

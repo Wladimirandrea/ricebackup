@@ -1,8 +1,6 @@
-// resources/js/stores/managerAppointmentStore.js
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import api from '@/plugins/axios'
-import { useNotificationStore } from '@/stores/notificationStore'
 import echo from '@/plugins/echo'
 import { useAuthStore } from '@/stores/auth'
 
@@ -31,16 +29,25 @@ export const useManagerAppointmentStore = defineStore('managerAppointment', () =
 
     function subscribeRealtime() {
         if (subscribedRealtime) return
-        subscribedRealtime = true
 
         const auth = useAuthStore()
         const user = auth.user
         if (!user) return
 
+        subscribedRealtime = true
         echo
             .private(`manager.${user.id}`)
             .listen('.appointment.created', handleRealtimeCreated)
             .listen('.appointment.status-updated', handleRealtimeStatusUpdate)
+    }
+
+    function unsubscribeRealtime() {
+        const auth = useAuthStore()
+        const user = auth.user
+        if (!user || !subscribedRealtime) return
+
+        echo.leave(`manager.${user.id}`)
+        subscribedRealtime = false
     }
 
     function handleRealtimeCreated(data) {
@@ -50,7 +57,9 @@ export const useManagerAppointmentStore = defineStore('managerAppointment', () =
             if (!calendar.value[dateKey]) {
                 calendar.value[dateKey] = { pending: 0, confirmed: 0, completed: 0, cancelled: 0, total: 0 }
             }
-            if (calendar.value[dateKey][appt.status] !== undefined) calendar.value[dateKey][appt.status]++
+            if (calendar.value[dateKey][appt.status] !== undefined) {
+                calendar.value[dateKey][appt.status]++
+            }
             calendar.value[dateKey].total++
         }
 
@@ -91,7 +100,9 @@ export const useManagerAppointmentStore = defineStore('managerAppointment', () =
         try {
             const { data } = await api.get('/manager/clients')
             myClients.value = data.data
-        } catch { myClients.value = [] }
+        } catch {
+            myClients.value = []
+        }
     }
 
     async function fetchCalendar(month = null, year = null) {
@@ -115,14 +126,22 @@ export const useManagerAppointmentStore = defineStore('managerAppointment', () =
     }
 
     function prevMonth() {
-        if (currentMonth.value === 1) { currentMonth.value = 12; currentYear.value-- }
-        else currentMonth.value--
+        if (currentMonth.value === 1) {
+            currentMonth.value = 12
+            currentYear.value--
+        } else {
+            currentMonth.value--
+        }
         fetchCalendar()
     }
 
     function nextMonth() {
-        if (currentMonth.value === 12) { currentMonth.value = 1; currentYear.value++ }
-        else currentMonth.value++
+        if (currentMonth.value === 12) {
+            currentMonth.value = 1
+            currentYear.value++
+        } else {
+            currentMonth.value++
+        }
         fetchCalendar()
     }
 
@@ -193,7 +212,6 @@ export const useManagerAppointmentStore = defineStore('managerAppointment', () =
                 const prevStatus = appt.status
                 appt.status = status
 
-                // actualizar contadores del calendario mensual
                 const dateKey = appt.date
                 if (dateKey && calendar.value[dateKey]) {
                     if (calendar.value[dateKey][prevStatus] !== undefined) calendar.value[dateKey][prevStatus]--
@@ -237,6 +255,6 @@ export const useManagerAppointmentStore = defineStore('managerAppointment', () =
         formSlots, loadingSlots,
         fetchClients, fetchCalendar, prevMonth, nextMonth, setClientFilter,
         fetchDay, fetchSlots, createAppointment, updateStatus, updateAppointment,
-        subscribeRealtime,
+        subscribeRealtime, unsubscribeRealtime
     }
 })

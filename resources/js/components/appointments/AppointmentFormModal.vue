@@ -84,7 +84,7 @@
 
                         <!-- Reason / Notas -->
                         <div class="af-section">
-                            <label class="af-section__label">Reason</label>
+                            <label class="af-section__label">{{ $t('schedule.reason') }}</label>
                             <input v-model="form.notes" type="text" class="af-input"
                                 :placeholder="$t('schedule.reasonPlaceholder')" />
                         </div>
