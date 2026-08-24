@@ -56,15 +56,21 @@ class ClientAppointmentController extends Controller
             return $counts;
         })->toArray();
 
-        // 🔹 NUEVO: traer los DayOff de ese mes y marcarlos en el calendario
+        // Traer todos los DayOff del mes
         $dayOffs = \App\Models\DayOff::whereMonth('date', $month)
             ->whereYear('date', $year)
-            ->get();
+            ->get()
+            ->groupBy(fn($d) => $d->date->format('Y-m-d'));
 
-        foreach ($dayOffs as $off) {
-            $key = $off->date->format('Y-m-d');
-            if (!isset($calendar[$key])) {
-                $calendar[$key] = [
+        // Traer todos los schedules (uno por day_of_week)
+        $schedules = \App\Models\Schedule::all()->keyBy('day_of_week');
+
+        foreach ($dayOffs as $dateKey => $dayOffsForDate) {
+            $carbonDate = \Carbon\Carbon::parse($dateKey);
+            $schedule = $schedules->get($carbonDate->dayOfWeek);
+
+            if (!isset($calendar[$dateKey])) {
+                $calendar[$dateKey] = [
                     'pending' => 0,
                     'confirmed' => 0,
                     'completed' => 0,
@@ -72,7 +78,29 @@ class ClientAppointmentController extends Controller
                     'total' => 0,
                 ];
             }
-            $calendar[$key]['is_day_off'] = true;
+
+            // Si no hay schedule configurado o no es día laboral, se considera bloqueado igual
+            if (!$schedule || !$schedule->is_working) {
+                $calendar[$dateKey]['is_day_off'] = true;
+                continue;
+            }
+
+            $workStart = substr($schedule->start_time, 0, 5);
+            $workEnd   = substr($schedule->end_time, 0, 5);
+
+            // 🔹 Verificar si el/los DayOff cubren TODO el rango laboral
+            $fullyBlocked = false;
+            foreach ($dayOffsForDate as $off) {
+                $offStart = substr($off->start_time, 0, 5);
+                $offEnd   = substr($off->end_time, 0, 5);
+
+                if ($offStart <= $workStart && $offEnd >= $workEnd) {
+                    $fullyBlocked = true;
+                    break;
+                }
+            }
+
+            $calendar[$dateKey]['is_day_off'] = $fullyBlocked;
         }
 
         return response()->json([

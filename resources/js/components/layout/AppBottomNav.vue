@@ -25,7 +25,7 @@ const managerItems = computed(() => [
     { label: t('nav.home'),         icon: 'fa-house',          route: 'manager.dashboard',    color: '#4a90e2' },
     { label: t('nav.clients'),      icon: 'fa-users',           route: 'manager.clients',      color: '#2dd4bf' },
     { label: t('nav.appointments'), icon: 'fa-calendar-check',  route: 'manager.appointments', color: '#a78bfa' },
-    { label: t('nav.calendar'),     icon: 'fa-calendar',        route: 'manager.calendar',     color: '#fb923c' },
+    
 ])
 
 const clientItems = computed(() => [

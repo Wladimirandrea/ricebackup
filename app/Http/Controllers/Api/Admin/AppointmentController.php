@@ -111,7 +111,7 @@ class AppointmentController extends Controller
             ->pluck('start_time')
             ->toArray();
 
-        if (!$dayOff && $schedule?->is_working && $schedule->start_time && $schedule->end_time) {
+        if ($schedule?->is_working && $schedule->start_time && $schedule->end_time) {
             $start = substr($schedule->start_time, 0, 5);
             $end   = substr($schedule->end_time,   0, 5);
 
@@ -122,10 +122,21 @@ class AppointmentController extends Controller
             $m = $sm;
             while ($h < $eh || ($h === $eh && $m < $em)) {
                 $slot = sprintf('%02d:%02d', $h, $m);
-                $availableSlots[] = [
-                    'time'      => $slot,
-                    'available' => !in_array($slot, $occupiedSlots),
-                ];
+
+                $isBlockedByDayOff = false;
+                if ($dayOff) {
+                    $dayOffStart = substr($dayOff->start_time, 0, 5);
+                    $dayOffEnd   = substr($dayOff->end_time,   0, 5);
+                    $isBlockedByDayOff = $slot >= $dayOffStart && $slot < $dayOffEnd;
+                }
+
+                if (!$isBlockedByDayOff) {
+                    $availableSlots[] = [
+                        'time'      => $slot,
+                        'available' => !in_array($slot, $occupiedSlots),
+                    ];
+                }
+
                 $m += 30;
                 if ($m >= 60) {
                     $m = 0;
@@ -134,19 +145,30 @@ class AppointmentController extends Controller
             }
         }
 
+        $isFullyDayOff = false;
+        if (!$schedule?->is_working) {
+            $isFullyDayOff = true;
+        } elseif ($dayOff) {
+            $workStart = substr($schedule->start_time, 0, 5);
+            $workEnd   = substr($schedule->end_time, 0, 5);
+            $offStart  = substr($dayOff->start_time, 0, 5);
+            $offEnd    = substr($dayOff->end_time, 0, 5);
+            $isFullyDayOff = $offStart <= $workStart && $offEnd >= $workEnd;
+        }
+
         return response()->json([
             'date'            => $date,
             'appointments'    => $appointments,
             'case_managers'   => $caseManagers,
             'available_slots' => $availableSlots,
-            'is_day_off'      => (bool) $dayOff,
+            'is_day_off'      => $isFullyDayOff,
             'day_off_info'    => $dayOff ? [
                 'reason'     => $dayOff->reason,
                 'start_time' => substr($dayOff->start_time, 0, 5),
                 'end_time'   => substr($dayOff->end_time,   0, 5),
             ] : null,
             'schedule' => [
-                'is_working' => $dayOff ? false : (bool) ($schedule?->is_working ?? false),
+                'is_working' => (bool) ($schedule?->is_working ?? false),
                 'start_time' => $schedule?->start_time ? substr($schedule->start_time, 0, 5) : null,
                 'end_time'   => $schedule?->end_time   ? substr($schedule->end_time, 0, 5)   : null,
             ],
