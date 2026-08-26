@@ -219,6 +219,11 @@
   "appointments": {
     "title": "Appointments",
     "new": "New Appointment",
+    "dayOffTitle": "Day Off",
+    "reasons": {
+      "labor_day": "Labor Day",
+      "christmas": "Christmas"
+    },
     "all": "All",
     "client": "Client",
     "caseManager": "Case Manager",

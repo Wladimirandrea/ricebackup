@@ -218,6 +218,11 @@
   },
   "appointments": {
     "title": "Citas",
+    "dayOffTitle": "Día No Laborable",
+    "reasons": {
+      "labor_day": "Día del Trabajo",
+      "christmas": "Navidad"
+    },
     "new": "Nueva Cita",
     "all": "Todas",
     "client": "Cliente",
