@@ -12,6 +12,23 @@ const { locale, setLocale } = useLocale()
 const router = useRouter()
 
 const showPassword = ref(false)
+const langOpen = ref(false)
+
+const languages = [
+    { code: 'en', name: 'English', flag: '🇺🇸' },
+    { code: 'es', name: 'Español', flag: '🇲🇽' },
+    { code: 'fr', name: 'Français', flag: '🇫🇷' },
+    { code: 'ar', name: 'العربية', flag: '🇸🇦' },
+]
+
+const currentLanguage = computed(() => {
+    return languages.find(l => l.code === locale.value) || languages[0]
+})
+
+function selectLocale(langCode) {
+    setLocale(langCode)
+    langOpen.value = false
+}
 
 // ── Form State ───────────────────────────────────────────────
 const form = ref({
@@ -49,11 +66,8 @@ async function handleLogin() {
         isLoading.value = false
     }
 }
-
-function toggleLocale() {
-    setLocale(locale.value === 'es' ? 'en' : 'es')
-}
 </script>
+
 <template>
     <div class="login-page">
         <div class="login-card">
@@ -79,7 +93,7 @@ function toggleLocale() {
                     <label for="email">{{ t('auth.login.email') }}</label>
                     <input id="email" v-model="form.email" type="email" :placeholder="t('auth.login.email_placeholder')"
                         :style="errors.email ? 'border-color: #e24b4a' : ''" autocomplete="email" />
-                    <span v-if="errors.email" style="color:#ff8a89; font-size:12px;">
+                    <span v-if="errors.email" class="error-text">
                         {{ errors.email[0] }}
                     </span>
                 </div>
@@ -110,7 +124,7 @@ function toggleLocale() {
                             </svg>
                         </button>
                     </div>
-                    <span v-if="errors.password" style="color:#ff8a89; font-size:12px;">
+                    <span v-if="errors.password" class="error-text">
                         {{ errors.password[0] }}
                     </span>
                 </div>
@@ -122,17 +136,35 @@ function toggleLocale() {
 
                 <div class="login-footer" style="margin-top: 12px;">
                     <a href="#" @click.prevent="router.push({ name: 'forgot-password' })">
-                        ¿Olvidaste tu contraseña?
+                        {{ t('auth.forgot.title') }}
                     </a>
                 </div>
 
             </form>
 
-            <!-- Footer -->
-            <div class="login-footer">
-                <a href="#" @click.prevent="toggleLocale">
-                    {{ locale === 'es' ? '🇺🇸 Switch to English' : '🇪🇸 Cambiar a Español' }}
-                </a>
+            <!-- Selector de idioma -->
+            <div class="login-footer lang-footer">
+                <div class="lang-selector">
+                    <button class="lang-toggle-btn" @click="langOpen = !langOpen">
+                        <span>{{ currentLanguage.flag }} {{ currentLanguage.name }}</span>
+                        <svg class="chevron" :class="{ rotated: langOpen }" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </button>
+
+                    <div v-if="langOpen" class="lang-menu">
+                        <button 
+                            v-for="lang in languages" 
+                            :key="lang.code" 
+                            class="lang-menu-item"
+                            :class="{ active: locale === lang.code }"
+                            @click="selectLocale(lang.code)"
+                        >
+                            <span>{{ lang.name }}</span>
+                            <span>{{ lang.flag }}</span>
+                        </button>
+                    </div>
+                </div>
             </div>
 
         </div>
@@ -239,6 +271,11 @@ function toggleLocale() {
     border-color: #4a90e2;
 }
 
+.error-text {
+    color: #ff8a89;
+    font-size: 12px;
+}
+
 .login-btn {
     margin-top: 6px;
     width: 100%;
@@ -307,5 +344,78 @@ function toggleLocale() {
 
 .toggle-password:hover {
     color: #c9d4e8;
+}
+
+/* Lang Selector Menu */
+.lang-footer {
+    position: relative;
+    display: flex;
+    justify-content: center;
+}
+
+.lang-selector {
+    position: relative;
+}
+
+.lang-toggle-btn {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 20px;
+    color: #c9d4e8;
+    padding: 6px 14px;
+    font-size: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.2s, color 0.2s;
+}
+
+.lang-toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+}
+
+.chevron {
+    transition: transform 0.2s;
+}
+
+.chevron.rotated {
+    transform: rotate(180deg);
+}
+
+.lang-menu {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: #111827;
+    border: 1px solid #2a3a55;
+    border-radius: 12px;
+    padding: 6px;
+    width: 150px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    z-index: 10;
+}
+
+.lang-menu-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 8px 12px;
+    background: none;
+    border: none;
+    color: #c9d4e8;
+    font-size: 12px;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: background 0.2s;
+}
+
+.lang-menu-item:hover,
+.lang-menu-item.active {
+    background: #1e2a3a;
+    color: #fff;
 }
 </style>

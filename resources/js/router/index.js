@@ -69,6 +69,15 @@ const routes = [
         path: '/:pathMatch(.*)*',
         redirect: '/',
     },
+
+
+
+    // Ruta pública para la vista de Baby Shower
+    {
+        path: '/baby-shower/guest/:guestId',
+        name: 'baby-shower-guest',
+        component: () => import('@/views/BabyShowerView.vue')
+    }
 ]
 
 const router = createRouter({

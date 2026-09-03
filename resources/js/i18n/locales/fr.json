@@ -1,0 +1,320 @@
+{
+  "common": {
+    "loading": "Chargement...",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "error": "Erreur",
+    "success": "Succès",
+    "logout": "Déconnexion",
+    "no": "Non"
+  },
+  "auth": {
+    "login": {
+      "title": "Connexion",
+      "subtitle": "Bon retour",
+      "email": "Adresse e-mail",
+      "email_placeholder": "votrenom@email.com",
+      "password": "Mot de passe",
+      "password_placeholder": "••••••••",
+      "submit": "Se connecter",
+      "submitting": "Vérification...",
+      "invalid_credentials": "E-mail ou mot de passe incorrect.",
+      "account_disabled": "Votre compte a été désactivé.",
+      "generic_error": "Une erreur est survenue. Veuillez réessayer."
+    },
+    "forgot": {
+      "title": "Mot de passe oublié ?",
+      "subtitle": "Nous vous enverrons un lien de récupération",
+      "email": "Adresse e-mail",
+      "submit": "Envoyer le lien de réinitialisation",
+      "submitting": "Envoi en cours...",
+      "success": "Vérifiez votre e-mail, nous vous avons envoyé le lien.",
+      "back_to_login": "Retour à la connexion",
+      "generic_error": "Une erreur est survenue. Veuillez réessayer."
+    },
+    "reset": {
+      "title": "Nouveau mot de passe",
+      "subtitle": "Entrez votre nouveau mot de passe",
+      "password": "Nouveau mot de passe",
+      "password_confirm": "Confirmer le mot de passe",
+      "submit": "Changer le mot de passe",
+      "submitting": "Enregistrement...",
+      "success": "Mot de passe mis à jour. Vous pouvez maintenant vous connecter.",
+      "invalid_token": "Le lien est invalide ou a expiré.",
+      "generic_error": "Une erreur est survenue. Veuillez réessayer."
+    }
+  },
+  "roles": {
+    "all": "Tous",
+    "admin": "Administrateur",
+    "case_manager": "Gestionnaire de cas",
+    "client": "Client"
+  },
+  "dashboard": {
+    "greeting": "Bienvenue{name} !",
+    "error_loading": "Erreur lors du chargement des statistiques du tableau de bord",
+    "weekly_calendar": "Calendrier hebdomadaire",
+    "current_week": "Semaine en cours",
+    "top_managers": "Top 3 Gestionnaires de cas",
+    "top_manager": "Meilleur Gestionnaire de cas du mois",
+    "no_data": "Aucune donnée disponible",
+    "cases": "cas",
+    "completed_cases_title": "Total de cas terminés",
+    "completed_cases": "Cas terminés",
+    "pending_cases_title": "Total de cas en attente",
+    "pending_cases": "Cas en attente",
+    "kpis": {
+      "new_clients": "Nouveaux clients",
+      "appointments_today": "Rendez-vous aujourd'hui",
+      "completed_cases": "Cas terminés",
+      "pending_cases": "Total en attente"
+    },
+    "status": {
+      "confirmed": "Confirmés",
+      "in_progress": "En cours",
+      "scheduled": "Programmés"
+    },
+    "time": {
+      "this_month": "Ce mois-ci"
+    }
+  },
+  "managerDashboard": {
+    "greeting": "Bienvenue, {name}",
+    "days": {
+      "mon": "Lundi",
+      "monShort": "Lun",
+      "tue": "Mardi",
+      "tueShort": "Mar",
+      "wed": "Mercredi",
+      "wedShort": "Mer",
+      "thu": "Jeudi",
+      "thuShort": "Jeu",
+      "fri": "Vendredi",
+      "friShort": "Ven",
+      "sat": "Samedi",
+      "satShort": "Sam",
+      "sun": "Dimanche",
+      "sunShort": "Dim"
+    },
+    "stats": {
+      "clients": "Clients",
+      "clientsSub": "Total des clients actifs",
+      "completed": "Terminés",
+      "completedSub": "Rendez-vous terminés ce mois-ci",
+      "pending": "En attente",
+      "pendingSub": "Rendez-vous en attente ce mois-ci",
+      "critical": "Aujourd'hui",
+      "criticalSub": "Rendez-vous prévus aujourd'hui"
+    },
+    "week": {
+      "title": "Calendrier hebdomadaire",
+      "current": "Semaine en cours",
+      "loading": "Chargement della semaine..."
+    },
+    "agenda": {
+      "title": "Ordre du jour d'aujourd'hui",
+      "loading": "Chargement de l'ordre du jour...",
+      "hour": "Heure",
+      "client": "Client",
+      "empty": "Aucun rendez-vous aujourd'hui"
+    },
+    "charts": {
+      "caseStatusTitle": "Statut des cas",
+      "closed": "Fermés",
+      "waiting": "En attente",
+      "pending": "En cours",
+      "newClientsTitle": "Nouveaux clients",
+      "emptyMonth": "Aucune donnée pour ce mois"
+    },
+    "tasks": {
+      "title": "Tâches",
+      "placeholder": "Nouvelle tâche...",
+      "priorityLow": "Basse",
+      "priorityMedium": "Moyenne",
+      "priorityHigh": "Haute",
+      "adding": "Ajout...",
+      "add": "Ajouter",
+      "loading": "Chargement des tâches...",
+      "empty": "Aucune tâche"
+    }
+  },
+  "users": {
+    "title": "Gestion des utilisateurs",
+    "create": "Créer un nouvel utilisateur",
+    "edit": "Modifier l'utilisateur",
+    "delete": "Supprimer l'utilisateur",
+    "confirm_delete": "Êtes-vous sûr de vouloir supprimer {name} ? Cette action est irréversible.",
+    "no_users": "Aucun utilisateur trouvé",
+    "no_user_found": "Cet utilisateur n'a pas pu être trouvé",
+    "delete_confirm": "Supprimer",
+    "deleting": "Suppression...",
+    "role_label": "Rôle :",
+    "photo_alt": "Photo de l'utilisateur",
+    "form": {
+      "full_name": "Nom complet",
+      "email": "E-mail",
+      "role": "Rôle",
+      "password": "Mot de passe",
+      "new_password": "Nouveau mot de passe (laisser vide pour conserver)",
+      "confirm_password": "Confirmer le mot de passe",
+      "upload_photo": "Télécharger une photo",
+      "cancel": "Annuler",
+      "create_user": "Créer l'utilisateur",
+      "update_user": "Mettre à jour l'utilisateur",
+      "saving": "Enregistrement...",
+      "error": "Une erreur est survenue. Veuillez réessayer."
+    },
+    "roles": {
+      "all": "Tous",
+      "admin": "Admin",
+      "case_manager": "Gestionnaire de cas",
+      "client": "Client"
+    },
+    "crumbs": {
+      "dashboard": "Tableau de bord",
+      "users": "Utilisateurs"
+    },
+    "filters": {
+      "all": "Tous"
+    },
+    "search_placeholder": "Rechercher par nom ou rôle...",
+    "book": {
+      "user_data_title": "DONNÉES DE L'UTILISATEUR",
+      "name_label": "Nom :",
+      "role_label": "Rôle :",
+      "status_label": "Statut :",
+      "active_status": "Actif"
+    }
+  },
+  "nav": {
+    "home": "Accueil",
+    "dashboard": "Tableau de bord",
+    "users": "Utilisateurs",
+    "caseManagers": "Gestionnaires",
+    "reports": "Rapports",
+    "calendar": "Calendrier",
+    "clients": "Clients",
+    "appointments": "Rendez-vous",
+    "settings": "Paramètres",
+    "logout": "Déconnexion",
+    "profile": "Profil",
+    "schedule": "Horaires"
+  },
+  "caseManagers": {
+    "title": "Gestionnaires de cas",
+    "subtitle": "Gérez votre équipe de gestionnaires de cas",
+    "searchPlaceholder": "Rechercher par nom ou e-mail...",
+    "role": "Poste",
+    "roleLabel": "Gestionnaire de cas",
+    "viewClients": "Voir les clients",
+    "clientsOf": "Clients de",
+    "noClients": "Aucun client assigné pour le moment",
+    "totalClients": "{count} client(s) assigné(s)",
+    "empty": "Aucun gestionnaire de cas trouvé",
+    "client": "Client",
+    "clients": "Clients",
+    "assignedClients": "Clients assignés",
+    "unassigned": "Non assigné",
+    "noUnassigned": "Aucun client non assigné",
+    "reassign": "Réassigner à un autre gestionnaire de cas",
+    "release": "Libérer le client",
+    "noManagers": "Aucun gestionnaire de cas disponible",
+    "assignedManager": "Gestionnaire de cas assigné",
+    "noAssigned": "Aucun gestionnaire de cas assigné"
+  },
+  "schedule": {
+    "title": "Horaire de travail",
+    "dayOff": "Jour de congé",
+    "work": "Travail",
+    "save": "Enregistrer",
+    "saved": "Enregistré avec succès",
+    "error": "Erreur lors de l'enregistrement de l'horaire",
+    "crumb": "Horaire",
+    "selectDaysOff": "Sélectionner les jours de congé",
+    "daysOff": "Jours de congé",
+    "reason": "Raison",
+    "reasonPlaceholder": "Raison optionnelle...",
+    "noDaysOff": "Aucun jour de congé enregistré",
+    "dateRequired": "Veuillez sélectionner une date",
+    "delete": "Supprimer"
+  },
+  "appointments": {
+    "title": "Rendez-vous",
+    "new": "Nouveau rendez-vous",
+    "dayOffTitle": "Jour de congé",
+    "reasons": {
+      "labor_day": "Fête du travail",
+      "christmas": "Noël"
+    },
+    "all": "Tous",
+    "client": "Client",
+    "caseManager": "Gestionnaire de cas",
+    "date": "Date",
+    "startTime": "Heure de début",
+    "status": "Statut",
+    "notes": "Notes",
+    "pending": "En attente",
+    "confirmed": "Confirmé",
+    "completed": "Terminé",
+    "cancelled": "Annulé",
+    "changeStatus": "Changer le statut",
+    "noAppointments": "Aucun rendez-vous pour ce jour",
+    "apptCount": "rdv",
+    "selectClient": "Sélectionner un client...",
+    "selectCM": "Sélectionner un gestionnaire de cas...",
+    "requiredFields": "Veuillez remplir tous les champs obligatoires",
+    "error": "Erreur lors de l'enregistrement du rendez-vous",
+    "dayOff": "Ce jour n'est pas un jour ouvrable",
+    "taken": "Occupé",
+    "selectCMFirst": "Sélectionnez d'abord un gestionnaire de cas pour voir les créneaux disponibles",
+    "noSlots": "Aucun créneau disponible pour ce jour",
+    "createdSuccess": "Rendez-vous planifié avec succès !",
+    "emailSent": "Un e-mail de confirmation a été envoyé.",
+    "edit": "Modifier le rendez-vous",
+    "cancel": "Annuler",
+    "confirmCancel": "Êtes-vous sûr de vouloir annuler ce rendez-vous ?",
+    "cancelledSuccess": "Rendez-vous annulé avec succès.",
+    "confirmCancelTitle": "Annuler le rendez-vous ?",
+    "confirmCancelBtn": "Oui, annuler le rendez-vous",
+    "newSubtitle": "Choisissez un jour, puis une heure pour votre rendez-vous",
+    "hasAppointmentHint": "Vous avez déjà un rendez-vous ce jour-là",
+    "changeDate": "Changer de date",
+    "pickAnotherDay": "Choisir un autre jour",
+    "notesPlaceholder": "Décrivez brièvement la raison de votre rendez-vous",
+    "submitting": "Planification...",
+    "submit": "Planifier le rendez-vous"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "clearAll": "Tout effacer",
+    "empty": "Aucune notification pour le moment",
+    "newAppointment": "Nouveau rendez-vous",
+    "cancelled": "Annulé",
+    "status": "Statut",
+    "justNow": "À l'instant",
+    "minsAgo": "il y a {count} min",
+    "hoursAgo": "il y a {count} h",
+    "daysAgo": "il y a {count} j"
+  },
+  "managerClients": {
+    "title": "Clients",
+    "searchPlaceholder": "Rechercher par nom ou e-mail...",
+    "noClients": "Aucun client trouvé",
+    "noClientsDesc": "Il n'y a aucun client assigné pour le moment",
+    "active": "Actif",
+    "inactive": "Inactif",
+    "totalAppts": "Total des rendez-vous",
+    "pending": "En attente",
+    "since": "Depuis",
+    "changePassword": "Changer le mot de passe",
+    "newPassword": "Nouveau mot de passe",
+    "confirmPassword": "Confirmer le mot de passe"
+  },
+  "managerAppointmentsList": {
+    "searchPlaceholder": "Rechercher par nom de client...",
+    "noAppointmentsDesc": "Il n'y a aucun rendez-vous avec ce statut"
+  },
+  "clientAppointmentsList": {
+    "noAppointmentsDesc": "Vous n'avez aucun rendez-vous avec ce statut"
+  }
+}

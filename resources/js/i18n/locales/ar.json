@@ -1,0 +1,320 @@
+{
+  "common": {
+    "loading": "جاري التحميل...",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "error": "خطأ",
+    "success": "نجاح",
+    "logout": "تسجيل الخروج",
+    "no": "لا"
+  },
+  "auth": {
+    "login": {
+      "title": "تسجيل الدخول",
+      "subtitle": "مرحبًا بعودتك",
+      "email": "البريد الإلكتروني",
+      "email_placeholder": "youremail.com",
+      "password": "كلمة المرور",
+      "password_placeholder": "••••••••",
+      "submit": "تسجيل الدخول",
+      "submitting": "جاري التحقق...",
+      "invalid_credentials": "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
+      "account_disabled": "تم تعطيل حسابك.",
+      "generic_error": "حدث خطأ ما. يرجى المحاولة مرة أخرى."
+    },
+    "forgot": {
+      "title": "هل نسيت كلمة المرور؟",
+      "subtitle": "سنرسل لك رابطًا لاستعادة الحساب",
+      "email": "البريد الإلكتروني",
+      "submit": "إرسال رابط الإعادة",
+      "submitting": "جاري الإرسال...",
+      "success": "تحقق من بريدك الإلكتروني، لقد أرسلنا لك الرابط.",
+      "back_to_login": "العودة لتسجيل الدخول",
+      "generic_error": "حدث خطأ ما. يرجى المحاولة مرة أخرى."
+    },
+    "reset": {
+      "title": "كلمة مرور جديدة",
+      "subtitle": "أدخل كلمة المرور الجديدة",
+      "password": "كلمة المرور الجديدة",
+      "password_confirm": "تأكيد كلمة المرور",
+      "submit": "تغيير كلمة المرور",
+      "submitting": "جاري الحفظ...",
+      "success": "تم تحديث كلمة المرور. يمكنك تسجيل الدخول الآن.",
+      "invalid_token": "الرابط غير صالح أو انتهت صلاحيته.",
+      "generic_error": "حدث خطأ ما. يرجى المحاولة مرة أخرى."
+    }
+  },
+  "roles": {
+    "all": "الكل",
+    "admin": "مسؤول النظام",
+    "case_manager": "مدير الحالة",
+    "client": "عميل"
+  },
+  "dashboard": {
+    "greeting": "أهلاً بك{name}!",
+    "error_loading": "خطأ في تحميل إحصائيات لوحة التحكم",
+    "weekly_calendar": "التقويم الأسبوعي",
+    "current_week": "الأسبوع الحالي",
+    "top_managers": "أفضل 3 مدراء حالات",
+    "top_manager": "أفضل مدير حالة لهذا الشهر",
+    "no_data": "لا توجد بيانات متاحة",
+    "cases": "حالات",
+    "completed_cases_title": "إجمالي الحالات المكتملة",
+    "completed_cases": "الحالات المكتملة",
+    "pending_cases_title": "إجمالي الحالات المعلقة",
+    "pending_cases": "الحالات المعلقة",
+    "kpis": {
+      "new_clients": "عملاء جدد",
+      "appointments_today": "مواعيد اليوم",
+      "completed_cases": "الحالات المكتملة",
+      "pending_cases": "إجمالي المعلقة"
+    },
+    "status": {
+      "confirmed": "مؤكدة",
+      "in_progress": "قيد التنفيذ",
+      "scheduled": "مجدولة"
+    },
+    "time": {
+      "this_month": "هذا الشهر"
+    }
+  },
+  "managerDashboard": {
+    "greeting": "مرحبًا، {name}",
+    "days": {
+      "mon": "الإثنين",
+      "monShort": "إثنين",
+      "tue": "الثلاثاء",
+      "tueShort": "ثلاثاء",
+      "wed": "الأربعاء",
+      "wedShort": "أربعاء",
+      "thu": "الخميس",
+      "thuShort": "خميس",
+      "fri": "الجمعة",
+      "friShort": "جمعة",
+      "sat": "السبت",
+      "satShort": "سبت",
+      "sun": "الأحد",
+      "sunShort": "أحد"
+    },
+    "stats": {
+      "clients": "العملاء",
+      "clientsSub": "إجمالي العملاء النشطين",
+      "completed": "المكتملة",
+      "completedSub": "المواعيد المكتملة هذا الشهر",
+      "pending": "المعلقة",
+      "pendingSub": "المواعيد المعلقة هذا الشهر",
+      "critical": "اليوم",
+      "criticalSub": "المواعيد المجدولة لليوم"
+    },
+    "week": {
+      "title": "التقويم الأسبوعي",
+      "current": "الأسبوع الحالي",
+      "loading": "جاري تحميل الأسبوع..."
+    },
+    "agenda": {
+      "title": "جدول أعمال اليوم",
+      "loading": "جاري تحميل جدول الأعمال...",
+      "hour": "الوقت",
+      "client": "العميل",
+      "empty": "لا توجد مواعيد اليوم"
+    },
+    "charts": {
+      "caseStatusTitle": "حالة القضية",
+      "closed": "مغلقة",
+      "waiting": "قيد الانتظار",
+      "pending": "معلقة",
+      "newClientsTitle": "عملاء جدد",
+      "emptyMonth": "لا توجد بيانات لهذا الشهر"
+    },
+    "tasks": {
+      "title": "المهام",
+      "placeholder": "مهمة جديدة...",
+      "priorityLow": "منخفضة",
+      "priorityMedium": "متوسطة",
+      "priorityHigh": "عالية",
+      "adding": "جاري الإضافة...",
+      "add": "إضافة",
+      "loading": "جاري تحميل المهام...",
+      "empty": "لا توجد مهام"
+    }
+  },
+  "users": {
+    "title": "إدارة المستخدمين",
+    "create": "إنشاء مستخدم جديد",
+    "edit": "تعديل المستخدم",
+    "delete": "حذف المستخدم",
+    "confirm_delete": "هل أنت تأكد من رغبتك في حذف {name}؟ لا يمكن التراجع عن هذا الإجراء.",
+    "no_users": "لم يتم العثور على مستخدمين",
+    "no_user_found": "تعذر العثور على هذا المستخدم",
+    "delete_confirm": "حذف",
+    "deleting": "جاري الحذف...",
+    "role_label": "الدور:",
+    "photo_alt": "صورة المستخدم",
+    "form": {
+      "full_name": "الاسم الكامل",
+      "email": "البريد الإلكتروني",
+      "role": "الدور",
+      "password": "كلمة المرور",
+      "new_password": "كلمة المرور الجديدة (اتركها فارغة للإبقاء عليها)",
+      "confirm_password": "تأكيد كلمة المرور",
+      "upload_photo": "تحميل صورة",
+      "cancel": "إلغاء",
+      "create_user": "إنشاء مستخدم",
+      "update_user": "تحديث المستخدم",
+      "saving": "جاري الحفظ...",
+      "error": "حدث خطأ ما. يرجى المحاولة مرة أخرى."
+    },
+    "roles": {
+      "all": "الكل",
+      "admin": "مسؤول",
+      "case_manager": "مدير الحالة",
+      "client": "عميل"
+    },
+    "crumbs": {
+      "dashboard": "لوحة التحكم",
+      "users": "المستخدمون"
+    },
+    "filters": {
+      "all": "الكل"
+    },
+    "search_placeholder": "البحث حسب الاسم أو الدور...",
+    "book": {
+      "user_data_title": "بيانات المستخدم",
+      "name_label": "الاسم:",
+      "role_label": "الدور:",
+      "status_label": "الحالة:",
+      "active_status": "نشط"
+    }
+  },
+  "nav": {
+    "home": "الرئيسية",
+    "dashboard": "لوحة التحكم",
+    "users": "المستخدمون",
+    "caseManagers": "مدراء الحالات",
+    "reports": "التقارير",
+    "calendar": "التقويم",
+    "clients": "العملاء",
+    "appointments": "المواعيد",
+    "settings": "الإعدادات",
+    "logout": "تسجيل الخروج",
+    "profile": "الملف الشخصي",
+    "schedule": "جدول العمل"
+  },
+  "caseManagers": {
+    "title": "مدراء الحالات",
+    "subtitle": "إدارة فريق مدراء الحالات الخاص بك",
+    "searchPlaceholder": "البحث حسب الاسم أو البريد الإلكتروني...",
+    "role": "الوظيفة",
+    "roleLabel": "مدير الحالة",
+    "viewClients": "عرض العملاء",
+    "clientsOf": "عملاء",
+    "noClients": "لم يتم تعيين عملاء بعد",
+    "totalClients": "تم تعيين {count} عميل/عملاء",
+    "empty": "لم يتم العثور على مدراء حالات",
+    "client": "عميل",
+    "clients": "العملاء",
+    "assignedClients": "العملاء المعينون",
+    "unassigned": "غير معين",
+    "noUnassigned": "لا يوجد عملاء غير معينين",
+    "reassign": "إعادة التعيين لمدير حالة آخر",
+    "release": "إلغاء تعيين العميل",
+    "noManagers": "لا يوجد مدراء حالات متاحون",
+    "assignedManager": "مدير الحالة المعين",
+    "noAssigned": "لم يتم تعيين مدير حالة"
+  },
+  "schedule": {
+    "title": "جدول العمل",
+    "dayOff": "يوم عطلة",
+    "work": "عمل",
+    "save": "حفظ",
+    "saved": "تم الحفظ بنجاح",
+    "error": "خطأ في حفظ جدول العمل",
+    "crumb": "الجدول",
+    "selectDaysOff": "حدد أيام العطلة",
+    "daysOff": "أيام العطلة",
+    "reason": "السبب",
+    "reasonPlaceholder": "سبب اختياري...",
+    "noDaysOff": "لا توجد أيام عطلة مسجلة",
+    "dateRequired": "يرجى تحديد تاريخ",
+    "delete": "حذف"
+  },
+  "appointments": {
+    "title": "المواعيد",
+    "new": "موعد جديد",
+    "dayOffTitle": "يوم عطلة",
+    "reasons": {
+      "labor_day": "عيد العمال",
+      "christmas": "عيد الميلاد"
+    },
+    "all": "الكل",
+    "client": "العميل",
+    "caseManager": "مدير الحالة",
+    "date": "التاريخ",
+    "startTime": "وقت البدء",
+    "status": "الحالة",
+    "notes": "ملاحظات",
+    "pending": "معلق",
+    "confirmed": "مؤكد",
+    "completed": "مكتمل",
+    "cancelled": "ملغى",
+    "changeStatus": "تغيير الحالة",
+    "noAppointments": "لا توجد مواعيد لهذا اليوم",
+    "apptCount": "موعد/مواعيد",
+    "selectClient": "اختر عميلاً...",
+    "selectCM": "اختر مدير حالة...",
+    "requiredFields": "يرجى ملء جميع الحقول المطلوبة",
+    "error": "خطأ في حفظ الموعد",
+    "dayOff": "هذا اليوم ليس يوم عمل",
+    "taken": "محجوز",
+    "selectCMFirst": "اختر مدير حالة أولاً لرؤية الأوقات المتاحة",
+    "noSlots": "لا توجد أوقات متاحة لهذا اليوم",
+    "createdSuccess": "تم جدولة الموعد بنجاح!",
+    "emailSent": "تم إرسال بريد إلكتروني للتأكيد.",
+    "edit": "تعديل الموعد",
+    "cancel": "إلغاء",
+    "confirmCancel": "هل أنت تأكد من رغبتك في إلغاء هذا الموعد؟",
+    "cancelledSuccess": "تم إلغاء الموعد بنجاح.",
+    "confirmCancelTitle": "إلغاء الموعد؟",
+    "confirmCancelBtn": "نعم، ألغِ الموعد",
+    "newSubtitle": "اختر يومًا، ثم وقتًا لموعدك",
+    "hasAppointmentHint": "لديك موعد بالفعل في هذا اليوم",
+    "changeDate": "تغيير التاريخ",
+    "pickAnotherDay": "اختر يومًا آخر",
+    "notesPlaceholder": "اشرح باختصار سبب موعدك",
+    "submitting": "جاري الجدولة...",
+    "submit": "حجز الموعد"
+  },
+  "notifications": {
+    "title": "الإشعارات",
+    "clearAll": "مسح الكل",
+    "empty": "لا توجد إشعارات بعد",
+    "newAppointment": "موعد جديد",
+    "cancelled": "ملغى",
+    "status": "الحالة",
+    "justNow": "الآن",
+    "minsAgo": "منذ {count} د",
+    "hoursAgo": "منذ {count} س",
+    "daysAgo": "منذ {count} يوم"
+  },
+  "managerClients": {
+    "title": "العملاء",
+    "searchPlaceholder": "البحث حسب الاسم أو البريد الإلكتروني...",
+    "noClients": "لم يتم العثور على عملاء",
+    "noClientsDesc": "لا يوجد عملاء معينون بعد",
+    "active": "نشط",
+    "inactive": "غير نشط",
+    "totalAppts": "إجمالي المواعيد",
+    "pending": "معلق",
+    "since": "منذ",
+    "changePassword": "تغيير كلمة المرور",
+    "newPassword": "كلمة المرور الجديدة",
+    "confirmPassword": "تأكيد كلمة المرور"
+  },
+  "managerAppointmentsList": {
+    "searchPlaceholder": "البحث باسم العميل...",
+    "noAppointmentsDesc": "لا توجد مواعيد بهذه الحالة"
+  },
+  "clientAppointmentsList": {
+    "noAppointmentsDesc": "ليس لديك مواعيد بهذه الحالة"
+  }
+}

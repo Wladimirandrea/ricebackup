@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Manager\ManagerTaskController;
 use App\Http\Controllers\Api\Admin\DashboardController;
-
+use App\Http\Controllers\GiftRegistryController;
 
 
 Broadcast::routes(['middleware' => ['auth:sanctum']]);
@@ -104,3 +104,14 @@ Route::middleware(['auth:sanctum', 'role:client'])->prefix('client')->group(func
     Route::post('appointments', [ClientAppointmentController::class, 'store']);
     Route::patch('/appointments/{appointment}/status', [ClientAppointmentController::class, 'updateStatus']);
 });
+
+
+
+
+
+
+
+
+
+Route::get('/baby-shower/guest/{guestId}', [GiftRegistryController::class, 'show']);
+Route::post('/baby-shower/{gift}/select',   [GiftRegistryController::class, 'selectGift']);

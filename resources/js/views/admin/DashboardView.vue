@@ -1,14 +1,10 @@
 <script setup>
-import { ref, onMounted, onUnmounted, onActivated, onDeactivated } from 'vue'
-import AppTopbar from '@/components/layout/AppTopbar.vue'
+import { ref, computed, onMounted, onUnmounted, onActivated, onDeactivated } from 'vue'
+import { useI18n } from 'vue-i18n'
 import api from '@/plugins/axios'
 import { useAuthStore } from '@/stores/auth'
 
-const crumbs = [
-    { label: 'Dashboard', icon: 'fa-house', route: null },
-]
-
-const actions = []
+const { t, locale } = useI18n()
 
 // ─────────────────────────────────────────────────────────
 // Estado
@@ -21,34 +17,68 @@ const loadError = ref(null)
 const kpis = ref([])
 const days = ref([])
 const topManagers = ref([])
-const donutChart = ref({ total: 0, legend: [] })
+const donutChart = ref({ primary: 0, legend: [] })
 const barsChart = ref({ total: 0, items: [] })
 
-// El usuario ya está en memoria tras el login (authStore.user), no hace
-// falta pedirlo de nuevo a /auth/me
 const userName = ref(authStore.user?.name || '')
 
+const kpiDictionary = {
+   // KPIs de Casos y Clientes
+    'nuevos clientes': 'dashboard.kpis.new_clients',
+    'citas para hoy': 'dashboard.kpis.appointments_today',
+    'total de casos completados': 'dashboard.kpis.completed_cases',
+    'total casos completados': 'dashboard.kpis.completed_cases',
+    'casos completados': 'dashboard.kpis.completed_cases',
+    'total de casos pendientes': 'dashboard.kpis.pending_cases',
+    'total casos pendientes': 'dashboard.kpis.pending_cases',
+    'casos pendientes': 'dashboard.kpis.pending_cases',
+    'total pendientes': 'dashboard.kpis.pending_cases',
+
+    // Estados
+    'confirmados': 'dashboard.status.confirmed',
+    'confirmadas': 'dashboard.status.confirmed',
+    'confirmado': 'dashboard.status.confirmed',
+    'en progreso': 'dashboard.status.in_progress',
+    'programadas': 'dashboard.status.scheduled',
+    'programados': 'dashboard.status.scheduled',
+
+    // Periodos de tiempo / Footers
+    'este mes': 'dashboard.time.this_month'
+}
+
 // ─────────────────────────────────────────────────────────
-// Reloj en vivo (esto sí puede quedar en el cliente)
+// Reloj en vivo (reactivo al idioma seleccionado)
 // ─────────────────────────────────────────────────────────
 const now = ref(new Date())
 let clockInterval = null
 
-const weekdayFormatter = new Intl.DateTimeFormat('en-US', { weekday: 'long' })
-const dateFormatter = new Intl.DateTimeFormat('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+const weekdayFormatter = computed(() => new Intl.DateTimeFormat(locale.value, { weekday: 'long' }))
+const dateFormatter = computed(() => new Intl.DateTimeFormat(locale.value, { month: 'long', day: 'numeric', year: 'numeric' }))
 
 function formatClockDate(d) {
-    return `${weekdayFormatter.format(d)}, ${dateFormatter.format(d)}`
+    return `${weekdayFormatter.value.format(d)}, ${dateFormatter.value.format(d)}`
 }
 
 function formatClockTime(d) {
-    return d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true })
+    return d.toLocaleTimeString(locale.value, { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true })
+}
+
+// Helper corregido para traducir claves o textos de las KPI
+function translateKpiText(textOrKey) {
+    if (!textOrKey) return ''
+    
+    // Si viene una clave explícita de i18n
+    if (t(textOrKey) !== textOrKey) return t(textOrKey)
+
+    // Si viene texto en español desde Laravel, se busca en el diccionario
+    const normalized = String(textOrKey).trim().toLowerCase()
+    const translationKey = kpiDictionary[normalized]
+
+    return translationKey ? t(translationKey) : textOrKey
 }
 
 // ─────────────────────────────────────────────────────────
-// Fetch de datos reales — usa la instancia `api` de @/plugins/axios,
-// la misma que usa authStore, así que ya lleva el interceptor con el
-// Bearer token (localStorage 'token') y el baseURL configurados.
+// Fetch de datos
 // ─────────────────────────────────────────────────────────
 async function fetchDashboardStats({ silent = false } = {}) {
     if (!silent) isLoading.value = true
@@ -60,19 +90,17 @@ async function fetchDashboardStats({ silent = false } = {}) {
         kpis.value = data.kpis ?? []
         days.value = data.week ?? []
         topManagers.value = data.top_managers ?? []
-        donutChart.value = data.charts?.donut ?? { total: 0, legend: [] }
+        donutChart.value = data.charts?.donut ?? { primary: 0, legend: [] }
         barsChart.value = data.charts?.bars ?? { total: 0, items: [] }
     } catch (err) {
         console.error('Error cargando el dashboard:', err)
-        // En refrescos silenciosos no tapamos el dashboard con el mensaje de
-        // error si ya había datos cargados — solo lo mostramos en la carga inicial.
-        if (!silent) loadError.value = 'No se pudieron cargar los datos del dashboard.'
+        if (!silent) loadError.value = t('dashboard.error_loading')
     } finally {
         if (!silent) isLoading.value = false
     }
 }
 
-const POLL_INTERVAL_MS = 15_000 // refresca los datos cada 15s
+const POLL_INTERVAL_MS = 15_000
 let pollInterval = null
 
 function startPolling() {
@@ -90,16 +118,12 @@ function stopPolling() {
 }
 
 function handleVisibilityChange() {
-    // Al volver a la pestaña (ej. tras estar en otra app/ventana), refresca
-    // de inmediato en vez de esperar al siguiente tick del polling.
     if (document.visibilityState === 'visible') {
         fetchDashboardStats({ silent: true })
     }
 }
 
 onMounted(() => {
-    // Si por alguna razón el store aún no tiene el user en memoria
-    // (ej. recarga de página con solo el token persistido), lo trae.
     if (!authStore.user) {
         authStore.fetchMe().then(() => {
             userName.value = authStore.user?.name || ''
@@ -116,8 +140,6 @@ onMounted(() => {
     }, 1000)
 })
 
-// Si el router usa <keep-alive>, el componente no se vuelve a montar al
-// regresar al dashboard — onActivated cubre ese caso.
 onActivated(() => {
     fetchDashboardStats({ silent: true })
     startPolling()
@@ -136,11 +158,12 @@ onUnmounted(() => {
 
 <template>
     <div class="page">
-
         <div class="content dashboard">
             <!-- Header con Reloj / Saludo -->
             <div class="dashboard__header">
-                <h1 class="dashboard__title">Buenos días{{ userName ? `, ${userName}` : '' }}</h1>
+                <h1 class="dashboard__title">
+                    {{ t('dashboard.greeting', { name: userName ? `, ${userName}` : '' }) }}
+                </h1>
                 <div class="dashboard__clock">
                     <span class="dashboard__clock-date">{{ formatClockDate(now) }}</span>
                     <span class="dashboard__clock-sep">-</span>
@@ -166,14 +189,16 @@ onUnmounted(() => {
                     <div class="stat-card__top">
                         <div>
                             <p class="stat-card__value">{{ kpi.value }}</p>
-                            <h3 class="stat-card__label">{{ kpi.title }}</h3>
+                            <h3 class="stat-card__label">
+                                {{ translateKpiText(kpi.title_key || kpi.title) }}
+                            </h3>
                         </div>
                         <div class="stat-card__icon">
                             <i :class="['fa-solid', kpi.icon]"></i>
                         </div>
                     </div>
                     <div class="stat-card__footer">
-                        {{ kpi.footer }}
+                        {{ translateKpiText(kpi.footer_key || kpi.footer) }}
                     </div>
                 </div>
             </div>
@@ -183,9 +208,9 @@ onUnmounted(() => {
                 <!-- Calendario Semanal -->
                 <div class="week-card">
                     <div class="week-card__header">
-                        <h2 class="week-card__title">Weekly Calendar</h2>
+                        <h2 class="week-card__title">{{ t('dashboard.weekly_calendar') }}</h2>
                         <div class="week-card__nav">
-                            <span class="week-card__nav-label">Current week</span>
+                            <span class="week-card__nav-label">{{ t('dashboard.current_week') }}</span>
                         </div>
                     </div>
                     <div class="week-grid">
@@ -203,7 +228,7 @@ onUnmounted(() => {
                                     <span class="week-chip__time">{{ evt.time }}</span>
                                     <span class="week-chip__name">{{ evt.name }}</span>
                                 </div>
-                                <div v-if="!isLoading && day.events.length === 0" class="week-grid__empty">
+                                <div v-if="!isLoading && (!day.events || day.events.length === 0)" class="week-grid__empty">
                                     —
                                 </div>
                             </div>
@@ -214,11 +239,11 @@ onUnmounted(() => {
                 <!-- Panel Lateral Top 3 Case Managers -->
                 <div class="agenda-card">
                     <div class="top-managers__header">
-                        <h2 class="agenda-card__title">Top 3 Case Managers</h2>
+                        <h2 class="agenda-card__title">{{ t('dashboard.top_managers') }}</h2>
                     </div>
                     <div class="managers-list">
                         <div v-if="!isLoading && topManagers.length === 0" class="managers-list__empty">
-                            Sin datos todavía
+                            {{ t('dashboard.no_data') }}
                         </div>
                         <div v-for="manager in topManagers" :key="manager.rank" class="manager-item">
                             <div class="manager-item__info">
@@ -228,7 +253,7 @@ onUnmounted(() => {
                             </div>
                             <div class="manager-item__stat">
                                 <span class="manager-item__stat-value">{{ manager.completed }}</span>
-                                <span class="manager-item__stat-label">casos</span>
+                                <span class="manager-item__stat-label">{{ t('dashboard.cases') }}</span>
                             </div>
                         </div>
                     </div>
@@ -239,11 +264,11 @@ onUnmounted(() => {
             <div class="charts-row">
                 <!-- Total Casos Completados -->
                 <div class="chart-card">
-                    <h3 class="chart-card__title">Total de Casos Completados</h3>
+                    <h3 class="chart-card__title">{{ t('dashboard.completed_cases_title') }}</h3>
                     <div class="chart-card__donut">
                         <div class="donut-display">
                             <span class="donut-display__number">{{ donutChart.primary ?? 0 }}</span>
-                            <span class="donut-display__label">Completed Cases</span>
+                            <span class="donut-display__label">{{ t('dashboard.completed_cases') }}</span>
                         </div>
                         <ul class="chart-legend">
                             <li
@@ -252,7 +277,7 @@ onUnmounted(() => {
                                 class="chart-legend__item"
                             >
                                 <span class="chart-legend__dot" :style="{ background: item.color }"></span>
-                                {{ item.value }} {{ item.label }}
+                                {{ item.value }} {{ translateKpiText(item.label) }}
                             </li>
                         </ul>
                     </div>
@@ -260,17 +285,17 @@ onUnmounted(() => {
 
                 <!-- Total Casos Pendientes -->
                 <div class="chart-card">
-                    <h3 class="chart-card__title">Total de Casos Pendientes</h3>
+                    <h3 class="chart-card__title">{{ t('dashboard.pending_cases_title') }}</h3>
                     <div class="bar-chart-preview">
                         <span class="bar-chart-preview__value">{{ barsChart.total ?? 0 }}</span>
-                        <span class="bar-chart-preview__label">Pending Cases</span>
+                        <span class="bar-chart-preview__label">{{ t('dashboard.pending_cases') }}</span>
                         <div class="bar-chart-bars">
                             <div
                                 v-for="(bar, idx) in barsChart.items"
                                 :key="idx"
                                 class="bar-col"
                                 :style="{ height: bar.heightPct + '%', background: bar.color }"
-                                :title="`${bar.label}: ${bar.value}`"
+                                :title="`${translateKpiText(bar.label)}: ${bar.value}`"
                             ></div>
                         </div>
                     </div>
@@ -278,7 +303,7 @@ onUnmounted(() => {
 
                 <!-- Top Case Manager del Mes -->
                 <div class="chart-card top-manager-highlight">
-                    <h3 class="chart-card__title">Top Case Manager</h3>
+                    <h3 class="chart-card__title">{{ t('dashboard.top_manager') }}</h3>
                     <div v-if="topManagers.length" class="top-manager-profile">
                         <img :src="topManagers[0].photo" class="top-manager-profile__img" />
                         <h4 class="top-manager-profile__name">{{ topManagers[0].name }}</h4>
@@ -287,11 +312,10 @@ onUnmounted(() => {
                         </div>
                     </div>
                     <div v-else class="top-manager-profile__empty">
-                        Sin datos todavía
+                        {{ t('dashboard.no_data') }}
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 </template>
@@ -364,7 +388,6 @@ onUnmounted(() => {
   font-size: 13px;
 }
 
-/* CARDS KPI */
 .stats-row {
   display: flex;
   flex-wrap: wrap;
@@ -458,7 +481,6 @@ onUnmounted(() => {
   text-align: center;
 }
 
-/* WEEK CARD & TOP MANAGERS ROW */
 .dashboard__row {
   margin-top: 20px;
   display: flex;
@@ -585,7 +607,6 @@ onUnmounted(() => {
 .rank-badge--2 { background: #64748b; }
 .rank-badge--3 { background: #b45309; }
 
-/* WEEK GRID */
 .week-card {
   padding: 14px;
   background: rgba(255, 255, 255, 0.10);
@@ -658,7 +679,6 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  /* Alto fijo ≈ 4 chips (cada uno ~44px con su gap) + un poco de aire */
   max-height: 190px;
   overflow-y: auto;
   scrollbar-width: thin;
@@ -712,7 +732,6 @@ onUnmounted(() => {
   color: #ffffff;
 }
 
-/* CHARTS ROW */
 .charts-row {
   margin-top: 16px;
   display: flex;

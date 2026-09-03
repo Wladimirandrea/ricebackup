@@ -17,7 +17,21 @@ const langOpen = ref(false)
 const profileOpen = ref(false)
 const notifOpen = ref(false)
 
-function toggleLocale(lang) { setLocale(lang); langOpen.value = false }
+const languages = [
+    { code: 'en', name: 'English (EN)', flag: '🇺🇸' },
+    { code: 'es', name: 'Español (ES)', flag: '🇲🇽' },
+    { code: 'fr', name: 'Français (FR)', flag: '🇫🇷' },
+    { code: 'ar', name: 'العربية (AR)', flag: '🇸🇦' },
+]
+
+const currentFlag = computed(() => {
+    return languages.find(l => l.code === locale.value)?.flag || '🌐'
+})
+
+function toggleLocale(lang) { 
+    setLocale(lang)
+    langOpen.value = false 
+}
 
 function toggleNotif() {
     notifOpen.value = !notifOpen.value
@@ -50,7 +64,6 @@ function goToNotif(n) {
     router.push({ name: routeName, params: { date: n.date } })
 }
 
-
 async function logout() {
     profileOpen.value = false
     await authStore.logout()
@@ -70,19 +83,22 @@ const initials = computed(() => {
         </button>
         <div class="nav-right">
 
-            <!-- Language -->
+            <!-- Language Selector -->
             <div class="lang-selector">
                 <button class="lang-btn" @click="langOpen = !langOpen">
-                    <span>{{ locale === 'en' ? '🇺🇸' : '🇲🇽' }}</span>
+                    <span>{{ currentFlag }}</span>
                     <span class="lang-code">{{ locale.toUpperCase() }}</span>
                     <i class="fa fa-chevron-down lang-arrow" :class="{ rotated: langOpen }"></i>
                 </button>
                 <div class="lang-dropdown" :class="{ open: langOpen }">
-                    <button class="lang-option" :class="{ active: locale === 'en' }" @click="toggleLocale('en')">
-                        <span>English (EN)</span><span>🇺🇸</span>
-                    </button>
-                    <button class="lang-option" :class="{ active: locale === 'es' }" @click="toggleLocale('es')">
-                        <span>Español (ES)</span><span>🇲🇽</span>
+                    <button 
+                        v-for="lang in languages" 
+                        :key="lang.code" 
+                        class="lang-option" 
+                        :class="{ active: locale === lang.code }" 
+                        @click="toggleLocale(lang.code)"
+                    >
+                        <span>{{ lang.name }}</span><span>{{ lang.flag }}</span>
                     </button>
                 </div>
                 <div v-if="langOpen" class="profile-overlay" @click="langOpen = false" />
@@ -119,17 +135,17 @@ const initials = computed(() => {
                                 <div class="notif-content">
                                     <p class="notif-text">
                                         <strong>{{ n.clientName }}</strong>
-                                        <span v-if="n.type === 'created'"> — {{ $t('notifications.newAppointment')
-                                        }}</span>
-                                        <span v-else-if="n.type === 'cancelled'"> — {{ $t('notifications.cancelled')
-                                        }}</span>
+                                        <span v-if="n.type === 'created'"> — {{ $t('notifications.newAppointment') }}</span>
+                                        <span v-else-if="n.type === 'cancelled'"> — {{ $t('notifications.cancelled') }}</span>
                                         <span v-else> — {{ $t('notifications.status') }}:
-                                            <span class="notif-status" :style="{ color: formatNotif(n).color }">{{
-                                                $t(`appointments.${n.status}`) }}</span>
+                                            <span class="notif-status" :style="{ color: formatNotif(n).color }">
+                                                {{ $t(`appointments.${n.status}`) }}
+                                            </span>
                                         </span>
                                     </p>
-                                    <p class="notif-meta">{{ n.date }} · {{ n.time }} · {{ n.caseManagerName }} · {{
-                                        timeAgo(n.createdAt) }}</p>
+                                    <p class="notif-meta">
+                                        {{ n.date }} · {{ n.time }} · {{ n.caseManagerName }} · {{ timeAgo(n.createdAt) }}
+                                    </p>
                                 </div>
                                 <div v-if="!n.read" class="notif-dot" />
                             </div>
@@ -173,6 +189,7 @@ const initials = computed(() => {
 </template>
 
 <style scoped>
+/* Tu estilo previo permanece igual */
 .navbar {
     grid-area: navbar;
     background: rgb(2 41 36);

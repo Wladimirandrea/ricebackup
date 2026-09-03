@@ -51,10 +51,32 @@
     "client": "Client"
   },
   "dashboard": {
-    "welcome": "Welcome, {name}",
-    "admin_title": "Admin Dashboard",
-    "case_manager_title": "Manager Dashboard",
-    "client_title": "My Appointments"
+    "greeting": "Welcome{name}!",
+    "error_loading": "Error loading dashboard statistics",
+    "weekly_calendar": "Weekly Calendar",
+    "current_week": "Current Week",
+    "top_managers": "Top 3 Case Managers",
+    "top_manager": "Top Case Manager of the Month",
+    "no_data": "No data available",
+    "cases": "cases",
+    "completed_cases_title": "Total Completed Cases",
+    "completed_cases": "Completed Cases",
+    "pending_cases_title": "Total Pending Cases",
+    "pending_cases": "Pending Cases",
+    "kpis": {
+      "new_clients": "New Clients",
+      "appointments_today": "Appointments Today",
+      "completed_cases": "Completed Cases",
+      "pending_cases": "Total Pending"
+    },
+    "status": {
+      "confirmed": "Confirmed",
+      "in_progress": "In Progress",
+      "scheduled": "Scheduled"
+    },
+    "time": {
+      "this_month": "This Month"
+    }
   },
   "managerDashboard": {
     "greeting": "Welcome, {name}",

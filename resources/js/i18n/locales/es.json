@@ -51,10 +51,32 @@
     "client": "Cliente"
   },
   "dashboard": {
-    "welcome": "Bienvenido, {name}",
-    "admin_title": "Panel de Administración",
-    "case_manager_title": "Panel del Gestor",
-    "client_title": "Mis Citas"
+    "greeting": "¡Hola{name}!",
+    "error_loading": "Error al cargar las estadísticas del dashboard",
+    "weekly_calendar": "Calendario Semanal",
+    "current_week": "Semana Actual",
+    "top_managers": "Top 3 Case Managers",
+    "top_manager": "Top Case Manager del Mes",
+    "no_data": "Sin datos",
+    "cases": "casos",
+    "completed_cases_title": "Total Casos Completados",
+    "completed_cases": "Casos Completados",
+    "pending_cases_title": "Total Casos Pendientes",
+    "pending_cases": "Casos Pendientes",
+    "kpis": {
+      "new_clients": "Nuevos Clientes",
+      "appointments_today": "Citas para Hoy",
+      "completed_cases": "Casos Completados",
+      "pending_cases": "Total Pendientes"
+    },
+    "status": {
+      "confirmed": "Confirmados",
+      "in_progress": "En Progreso",
+      "scheduled": "Programadas"
+    },
+    "time": {
+      "this_month": "Este Mes"
+    }
   },
   "managerDashboard": {
     "greeting": "Bienvenido, {name}",
