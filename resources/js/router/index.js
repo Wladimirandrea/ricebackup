@@ -65,19 +65,29 @@ const routes = [
             { path: 'appointments/new', name: 'client.appointments.create', component: () => import('@/views/client/AppointmentCreateView.vue') },
         ],
     },
+
+    // Rutas públicas para Baby Shower
     {
-        path: '/:pathMatch(.*)*',
-        redirect: '/',
+        path: '/baby-shower',
+        name: 'baby-shower-intro',
+        component: () => import('@/views/BabyShowerIntro.vue'),
     },
-
-
-
-    // Ruta pública para la vista de Baby Shower
+    {
+        path: '/baby-shower/card/:guestId',
+        name: 'baby-shower-card',
+        component: () => import('@/views/BabyShowerCard.vue')
+    },
     {
         path: '/baby-shower/guest/:guestId',
         name: 'baby-shower-guest',
         component: () => import('@/views/BabyShowerView.vue')
-    }
+    },
+
+    // Ruta de captura de 404/Redirección SIEMPRE al final
+    {
+        path: '/:pathMatch(.*)*',
+        redirect: '/',
+    },
 ]
 
 const router = createRouter({
@@ -97,18 +107,15 @@ router.beforeEach((to) => {
         localStorage.removeItem('token')
     }
 
-    // Si la ruta requiere guest y ya hay token, redirigir según su rol
     if (to.meta.guest && token) {
         return getRoleRoute(role)
     }
 
-    // Verificar si la ruta o sus ancestros requieren autenticación
     const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
     if (requiresAuth && !token) {
         return { name: 'login' }
     }
 
-    // Verificar roles acumulados en la jerarquía de rutas (to.matched)
     const allowedRoles = to.matched.find(record => record.meta.roles)?.meta.roles
     if (allowedRoles && token && !allowedRoles.includes(role)) {
         return getRoleRoute(role)

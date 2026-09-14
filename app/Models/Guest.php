@@ -11,8 +11,8 @@ class Guest extends Model
 
     protected $fillable = ['name'];
 
-    public function gift()
+    public function gifts()
     {
-        return $this->hasOne(Gift::class);
+        return $this->belongsToMany(Gift::class)->withTimestamps();
     }
 }

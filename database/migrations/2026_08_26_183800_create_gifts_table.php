@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('image_url')->nullable();
+            
 
             // Relación con la tabla guests (no users)
             $table->foreignId('guest_id')

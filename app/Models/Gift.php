@@ -9,10 +9,10 @@ class Gift extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'image_url', 'guest_id'];
+    protected $fillable = ['name', 'image_url', 'max_selection'];
 
-    public function guest()
+    public function guests()
     {
-        return $this->belongsTo(Guest::class);
+        return $this->belongsToMany(Guest::class)->withTimestamps();
     }
 }

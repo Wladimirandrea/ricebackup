@@ -1,28 +1,26 @@
 <?php
+
 // routes/api.php
 
 use App\Http\Controllers\Api\Admin\AdminUserController;
 use App\Http\Controllers\Api\Admin\AppointmentController;
 use App\Http\Controllers\Api\Admin\CaseManagerController;
+use App\Http\Controllers\Api\Admin\DashboardController;
 use App\Http\Controllers\Api\Admin\DayOffController;
 use App\Http\Controllers\Api\Admin\ScheduleController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\Client\ClientAppointmentController;
 use App\Http\Controllers\Api\Manager\ManagerAppointmentController;
 use App\Http\Controllers\Api\Manager\ManagerClientController;
+use App\Http\Controllers\Api\Manager\ManagerTaskController;
 use App\Http\Controllers\Api\PasswordResetController;
+use App\Http\Controllers\GiftRegistryController;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\Manager\ManagerTaskController;
-use App\Http\Controllers\Api\Admin\DashboardController;
-use App\Http\Controllers\GiftRegistryController;
-
 
 Broadcast::routes(['middleware' => ['auth:sanctum']]);
+
 // ── Rutas públicas ──────────────────────────────────────────
-Route::prefix('auth')->group(function () {
-    Route::post('/login', [AuthController::class, 'login']);
-});
 Route::prefix('auth')->group(function () {
     Route::post('/login',           [AuthController::class, 'login']);
     Route::post('/forgot-password', [PasswordResetController::class, 'forgotPassword']);
@@ -35,46 +33,44 @@ Route::middleware('auth:sanctum')->prefix('auth')->group(function () {
     Route::get('/me',      [AuthController::class, 'me']);
 });
 
-// ── Ejemplo de rutas protegidas por rol ────────────────────
+// ── Rutas Admin ────────────────────────────────────────────
 Route::middleware(['auth:sanctum', 'role:admin'])->prefix('admin')->group(function () {
     Route::apiResource('/users', AdminUserController::class);
     Route::get('/users-case-managers', [AdminUserController::class, 'caseManagers']);
 
-    // ── Case Managers — estáticas primero ──
+    // Case Managers — estáticas
     Route::get('/case-managers/all', [CaseManagerController::class, 'allManagers']);
     Route::get('/case-managers/unassigned-clients', [CaseManagerController::class, 'unassignedClients']);
     Route::get('/case-managers/client/{client}/manager', [CaseManagerController::class, 'clientManager']);
-    Route::post('/case-managers/reassign', [CaseManagerController::class, 'reassign']); // ← subir aquí
+    Route::post('/case-managers/reassign', [CaseManagerController::class, 'reassign']);
     Route::get('/case-managers', [CaseManagerController::class, 'index']);
 
-    // ── Con parámetros — al final ──
-
+    // Case Managers — dinámicas
     Route::get('/case-managers/{user}/clients', [CaseManagerController::class, 'clients']);
     Route::delete('/case-managers/release/{client}', [CaseManagerController::class, 'release']);
 
-
-    // Module 4 — Schedules
+    // Schedules
     Route::get('/schedule', [ScheduleController::class, 'index']);
     Route::put('/schedule/{schedule}', [ScheduleController::class, 'update']);
 
-    // ── Days Off ── prefijo para evitar conflictos
-    Route::get('/days-off',      [DayOffController::class, 'index']);
-    Route::post('/days-off',      [DayOffController::class, 'store']);
+    // Days Off
+    Route::get('/days-off',            [DayOffController::class, 'index']);
+    Route::post('/days-off',           [DayOffController::class, 'store']);
     Route::put('/days-off/{dayOff}',   [DayOffController::class, 'update']);
-    Route::delete('/days-off/{dayOff}',   [DayOffController::class, 'destroy']);
+    Route::delete('/days-off/{dayOff}',[DayOffController::class, 'destroy']);
 
-
-    Route::get('/appointments/calendar', [AppointmentController::class, 'calendar']);
+    // Appointments
     Route::get('/appointments/calendar',              [AppointmentController::class, 'calendar']);
     Route::get('/appointments/day',                   [AppointmentController::class, 'day']);
     Route::post('/appointments',                      [AppointmentController::class, 'store']);
-    Route::put('/appointments/{appointment}', [AppointmentController::class, 'update']);
+    Route::put('/appointments/{appointment}',          [AppointmentController::class, 'update']);
     Route::patch('/appointments/{appointment}/status', [AppointmentController::class, 'updateStatus']);
-    Route::get('/appointments/slots', [AppointmentController::class, 'slots']);
+    Route::get('/appointments/slots',                 [AppointmentController::class, 'slots']);
 
     Route::get('/dashboard/stats', [DashboardController::class, 'stats']);
 });
 
+// ── Rutas Case Manager ──────────────────────────────────────
 Route::middleware(['auth:sanctum', 'role:case_manager'])->prefix('manager')->group(function () {
     Route::get('/clients', [ManagerClientController::class, 'index']);
     Route::get('/clients/{client}', [ManagerClientController::class, 'show']);
@@ -95,23 +91,17 @@ Route::middleware(['auth:sanctum', 'role:case_manager'])->prefix('manager')->gro
     Route::get('/appointments/list', [ManagerAppointmentController::class, 'index']);
 });
 
+// ── Rutas Client ───────────────────────────────────────────
 Route::middleware(['auth:sanctum', 'role:client'])->prefix('client')->group(function () {
     Route::get('/case-manager', [ClientAppointmentController::class, 'caseManager']);
     Route::get('/appointments/calendar', [ClientAppointmentController::class, 'calendar']);
     Route::get('/appointments/day',      [ClientAppointmentController::class, 'day']);
-    Route::get('/appointments/list', [ClientAppointmentController::class, 'index']);
-    Route::get('appointments/slots', [ClientAppointmentController::class, 'slots']);
-    Route::post('appointments', [ClientAppointmentController::class, 'store']);
+    Route::get('/appointments/list',     [ClientAppointmentController::class, 'index']);
+    Route::get('/appointments/slots',    [ClientAppointmentController::class, 'slots']);
+    Route::post('/appointments',         [ClientAppointmentController::class, 'store']);
     Route::patch('/appointments/{appointment}/status', [ClientAppointmentController::class, 'updateStatus']);
 });
 
-
-
-
-
-
-
-
-
+// ── Baby Shower (Públicas) ──────────────────────────────────
 Route::get('/baby-shower/guest/{guestId}', [GiftRegistryController::class, 'show']);
 Route::post('/baby-shower/{gift}/select',   [GiftRegistryController::class, 'selectGift']);

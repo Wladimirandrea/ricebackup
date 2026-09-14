@@ -12,7 +12,6 @@ class GiftRegistryController extends Controller
     public function show($guestId)
     {
         try {
-            // Verifica que el invitado exista
             $guest = Guest::find($guestId);
 
             if (!$guest) {
@@ -21,8 +20,21 @@ class GiftRegistryController extends Controller
                 ], 404);
             }
             
-            // Carga los regalos y el nombre del invitado reservado
-            $gifts = Gift::with('guest')->get();
+            // Carga regalos con conteo de selecciones y evalúa estado para la vista
+            $gifts = Gift::withCount('guests')->get()->map(function ($gift) use ($guestId) {
+                $maxSelection = $gift->max_selection ?? 1;
+                $selectionsCount = $gift->guests_count;
+
+                return [
+                    'id'                => $gift->id,
+                    'name'              => $gift->name,
+                    'image_url'         => $gift->image_url,
+                    'max_selection'     => $maxSelection,
+                    'selections_count'  => $selectionsCount,
+                    'is_selected_by_me' => $gift->guests()->where('guest_id', $guestId)->exists(),
+                    'is_full'           => $selectionsCount >= $maxSelection,
+                ];
+            });
 
             return response()->json([
                 'guest' => $guest,
@@ -30,7 +42,6 @@ class GiftRegistryController extends Controller
             ]);
 
         } catch (Exception $e) {
-            // Devuelve el error exacto para diagnosticar
             return response()->json([
                 'error' => $e->getMessage(),
                 'file'  => $e->getFile(),
@@ -45,19 +56,30 @@ class GiftRegistryController extends Controller
             'guest_id' => 'required|exists:guests,id',
         ]);
 
-        $gift = Gift::findOrFail($giftId);
+        $guestId = $request->guest_id;
+        $gift = Gift::withCount('guests')->findOrFail($giftId);
+        $maxSelection = $gift->max_selection ?? 1;
 
-        if ($gift->guest_id !== null) {
+        // Validar si el invitado ya reservó este regalo previamente
+        if ($gift->guests()->where('guest_id', $guestId)->exists()) {
             return response()->json([
-                'message' => 'Este regalo ya fue reservado por otro invitado.'
+                'message' => 'Ya has reservado este regalo.'
             ], 422);
         }
 
-        $gift->update(['guest_id' => $request->guest_id]);
+        // Validar si ya se alcanzó el límite de selecciones
+        if ($gift->guests_count >= $maxSelection) {
+            return response()->json([
+                'message' => 'Este regalo ya ha alcanzado el límite máximo de reservas.'
+            ], 422);
+        }
+
+        // Registrar la selección en la tabla pivote
+        $gift->guests()->attach($guestId);
 
         return response()->json([
             'message' => '¡Regalo reservado con éxito!',
-            'gift'    => $gift->load('guest')
+            'gift'    => $gift
         ]);
     }
 }
