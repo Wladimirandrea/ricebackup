@@ -91,7 +91,8 @@ const routes = [
 ]
 
 const router = createRouter({
-    history: createWebHistory(import.meta.env.BASE_URL),
+    // ✅ Corregido: se usa '/' directamente para evitar que agregue '/build/'
+    history: createWebHistory('/'),
     routes,
 })
 
