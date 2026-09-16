@@ -119,7 +119,7 @@ onUnmounted(() => {
     <!-- SECCIÓN 1: INVITACIÓN PRINCIPAL -->
     <div class="card-container invitation-card">
       <div class="content-top">
-        <h2 class="guest-greeting">¡Hola, {{ guestName }}!</h2>
+        <h2 class="guest-greeting">¡Hola, Familia y Amigos!</h2>
         <p class="top-header">¡Una princesita está en camino!</p>
       </div>
 
