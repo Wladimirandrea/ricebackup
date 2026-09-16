@@ -2,7 +2,8 @@ import axios from 'axios'
 import { i18n } from '@/i18n'
 
 const api = axios.create({
-    baseURL: import.meta.env.VITE_API_URL || 'http://192.168.12.125:8000/api',
+    // Se usa '/api' relativo como respaldo para producción
+    baseURL: import.meta.env.VITE_API_URL || '/api',
     headers: {
         'Content-Type': 'application/json',
         'Accept':       'application/json',
