@@ -28,7 +28,7 @@ class GiftSeeder extends Seeder
             [
                 'name' => 'Set de biberones',
                 'max_selection' => 3,
-                'image_url' => null,
+                'image_url' => 'https://http2.mlstatic.com/D_NQ_NP_902095-MLA99463965546_112025-O.webp',
                 'guest_id' => null,
             ],
             [
