@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             ScheduleSeeder::class,
             GuestSeeder::class,
-            /* AppointmentSeeder::class, */
+            GiftSeeder::class,
         ]);
          
     }
