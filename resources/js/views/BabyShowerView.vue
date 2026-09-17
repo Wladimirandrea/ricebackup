@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
-import api from '@/api'; // 👈 Usamos la instancia configurada en api.js
+import axios from 'axios'; // 👈 Cambiado de '@/api' a 'axios'
 
 const route = useRoute();
 const guestId = route.params.guestId;
@@ -12,7 +12,7 @@ const message = ref('');
 
 const loadData = async () => {
   try {
-    const response = await api.get(`/baby-shower/guest/${guestId}`);
+    const response = await axios.get(`/api/baby-shower/guest/${guestId}`);
     currentGuest.value = response.data.guest;
     gifts.value = response.data.gifts;
   } catch (error) {
@@ -22,7 +22,7 @@ const loadData = async () => {
 
 const selectGift = async (giftId) => {
   try {
-    const response = await api.post(`/baby-shower/${giftId}/select`, {
+    const response = await axios.post(`/api/baby-shower/${giftId}/select`, {
       guest_id: guestId
     });
     message.value = response.data.message;
