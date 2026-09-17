@@ -13,7 +13,7 @@ class GiftSeeder extends Seeder
             [
                 'name' => 'Bañera',
                 'max_selection' => 1,
-                'image_url' => 'https://i5.walmartimages.com/seo/Doulami-Collapsible-Baby-Bathtub-for-Infants-Baby-Tubs-for-Newborns-with-Cushion-and-Thermometer-0-36-Month-Gray_5c962415-b55e-465a-b219-70d5595854ad.5e6aade43e220736ab19b2ed3789a939.jpeg?odnHeight=573&odnWidth=573&odnBg=FFFFFF',
+                'image_url' => 'https://i5.walmartimages.com/seo/PC-3-IN-1-BATHTUB_307da927-cae5-4787-a70a-9f4bc6c96d24.e5100ab7195e25a3ee2d09beca367753.jpeg?odnHeight=573&odnWidth=573&odnBg=FFFFFF',
             ],
             [
                 'name' => 'Panales',
