@@ -22,12 +22,12 @@ class GiftSeeder extends Seeder
             [
                 'name' => 'Toallitas humedas',
                 'max_selection' => 1,
-                'image_url' => 'https://imgs.search.brave.com/P3Mj9Bh6MGp2do0X6uz9hlV4ISGxocUkld4EI09KLpE/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9taXIt/czMtY2RuLWNmLmJl/aGFuY2UubmV0L3By/b2plY3RzLzQwNC9h/MjYyNzcxOTI0OTU3/MTkuWTNKdmNDdzVP/VGtzTnpneUxEQXNN/VEE0LmpwZw==',
+                'image_url' => 'https://i5.walmartimages.com/seo/Huggies-Aloe-Vitamin-E-Baby-Wipes-for-Sensitive-Skin-Unscented-1-Flip-Top-Pack-176-Wipes_892a867f-9d6b-425c-94d6-7421640c85c5.776ae215da716f05056fc0d3fec76b6e.jpeg?odnHeight=573&odnWidth=573&odnBg=FFFFFF',
                 'guest_id' => null,
             ],
             [
                 'name' => 'Set de biberones',
-                'max_selection' => 3,
+                'max_selection' => 1,
                 'image_url' => 'https://http2.mlstatic.com/D_NQ_NP_902095-MLA99463965546_112025-O.webp',
                 'guest_id' => null,
             ],
