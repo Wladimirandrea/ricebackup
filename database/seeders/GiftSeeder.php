@@ -28,17 +28,17 @@ class GiftSeeder extends Seeder
             [
                 'name' => 'Ropa de niña 0-3 meses',
                 'max_selection' => 5,
-                'image_url' => 'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=800&auto=format&fit=crop&q=80',
+                'image_url' => 'https://i.ebayimg.com/images/g/8EUAAeSwjBdqGvqP/s-l500.webp',
             ],
             [
                 'name' => 'Ropa de niña 3-6 meses',
                 'max_selection' => 5,
-                'image_url' => 'https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=800&auto=format&fit=crop&q=80',
+                'image_url' => 'https://m.media-amazon.com/images/I/71N8BAICP1L._AC_SX425_.jpg',
             ],
             [
                 'name' => 'Kit de cuidado personal bebe',
                 'max_selection' => 2,
-                'image_url' => 'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=800&auto=format&fit=crop&q=80',
+                'image_url' => 'https://http2.mlstatic.com/D_NQ_NP_816966-MCO91753098399_092025-O.webp',
             ],
             [
                 'name' => 'Tetero Anti cólicos',
