@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             ScheduleSeeder::class,
             GuestSeeder::class,
             GiftSeeder::class,
+            GiftGuestSeeder::class,
         ]);
          
     }
