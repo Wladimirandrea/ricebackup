@@ -22,7 +22,8 @@ class GiftSeeder extends Seeder
             [
                 'name' => 'Toallitas humedas',
                 'max_selection' => 1,
-                'image_url' => 'https://i5.walmartimages.com/seo/Huggies-Aloe-Vitamin-E-Baby-Wipes-for-Sensitive-Skin-Unscented-1-Flip-Top-Pack-176-Wipes_892a867f-9d6b-425c-94d6-7421640c85c5.776ae215da716f05056fc0d3fec76b6e.jpeg?odnHeight=573&odnWidth=573&odnBg=FFFFFF',
+                'image_url' => 'https://i5.walmartimages.com/seo/Huggies-Aloe-Vitamin-E-Baby-Wipes-for-Sensitive-Skin-Unscented-1-Flip-Top-Pack-176-Wipes_892a867f-9d6b-425c-94d6-7421640c85c5.776ae215da716f05056fc0d3fec76b6e.jpeg?odnHeight=573&odnWidth=573&odnBg=FFFFFF
+                ',
                 'guest_id' => null,
             ],
             [
