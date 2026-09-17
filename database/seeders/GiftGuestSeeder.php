@@ -9,7 +9,7 @@ class GiftGuestSeeder extends Seeder
 {
     public function run(): void
     {
-        // Asignaciones iniciales de regalos elegidos por invitados
+        /*// Asignaciones iniciales de regalos elegidos por invitados
         $assignments = [
             [
                 'gift_id'  => 1, // ID del regalo (ej. Pañales)
@@ -28,6 +28,6 @@ class GiftGuestSeeder extends Seeder
                     'updated_at' => now(),
                 ]
             );
-        }
+        }*/
     }
 }
