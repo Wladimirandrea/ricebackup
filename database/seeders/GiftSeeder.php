@@ -43,7 +43,7 @@ class GiftSeeder extends Seeder
             [
                 'name' => 'Tetero Anti cólicos',
                 'max_selection' => 4,
-                'image_url' => 'https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?w=800&auto=format&fit=crop&q=80',
+                'image_url' => 'https://m.media-amazon.com/images/I/71WLmt-O3mL._SL1500_.jpg',
             ],
             [
                 'name' => 'Car seat',
