@@ -38,6 +38,7 @@ class GuestSeeder extends Seeder
             ['name' => 'Isabel'],
             ['name' => 'Abuelita'],
             ['name' => 'Mama'],
+            ['name' => 'brithany'],
                                             
             
             
