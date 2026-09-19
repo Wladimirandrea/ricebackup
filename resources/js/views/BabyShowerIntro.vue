@@ -71,7 +71,6 @@
 
   </div>
 </template>
-
 <script setup>
 import { ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
@@ -79,7 +78,8 @@ import { useRouter, useRoute } from 'vue-router'
 const router = useRouter()
 const route = useRoute()
 
-const guestId = ref(route.params.guestId || 1)
+// Captura el parámetro 'name' desde la URL (ej: 'carolina')
+const guestName = ref(route.params.name || route.params.guestName || 'carolina')
 const videoPath = ref('/videos/tu-video.mp4')
 
 const bgVideo = ref(null)
@@ -104,6 +104,10 @@ const toggleMute = () => {
 }
 
 const enterInvitation = () => {
-  router.push({ name: 'baby-shower-card', params: { guestId: guestId.value } })
+  // Redirige manteniendo el nombre en los parámetros de la ruta
+  router.push({ 
+    name: 'baby-shower-card', 
+    params: { name: guestName.value } 
+  })
 }
 </script>
