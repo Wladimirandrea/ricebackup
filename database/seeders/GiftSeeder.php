@@ -48,7 +48,7 @@ class GiftSeeder extends Seeder
             [
                 'name' => 'Car seat',
                 'max_selection' => 1,
-                'image_url' => 'https://images.unsplash.com/photo-1544126592-807ade215a0b?w=800&auto=format&fit=crop&q=80',
+                'image_url' => 'https://m.media-amazon.com/images/I/515cRoLuoSL._AC_UF894,1000_QL80_FMwebp_.jpg',
             ],
             [
                 'name' => 'Cuna',
@@ -133,7 +133,7 @@ class GiftSeeder extends Seeder
             [
                 'name' => 'Muñequitos de apego',
                 'max_selection' => 3,
-                'image_url' => 'https://images.unsplash.com/photo-1558060370-d644479cb6f7?w=800&auto=format&fit=crop&q=80',
+                'image_url' => 'https://m.media-amazon.com/images/I/619Tts+QerL._AC_UF894,1000_QL80_FMwebp_.jpg',
             ],
         ];
 
