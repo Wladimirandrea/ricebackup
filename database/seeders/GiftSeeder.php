@@ -58,7 +58,7 @@ class GiftSeeder extends Seeder
             [
                 'name' => 'Mecedora',
                 'max_selection' => 1,
-                'image_url' => 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&auto=format&fit=crop&q=80',
+                'image_url' => 'https://m.media-amazon.com/images/I/71Q4Dj+dubL._AC_UF894,1000_QL80_FMwebp_.jpg',
             ],
             [
                 'name' => 'Panales de algodón',
