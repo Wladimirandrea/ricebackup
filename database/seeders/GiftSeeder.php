@@ -63,7 +63,7 @@ class GiftSeeder extends Seeder
             [
                 'name' => 'Panales de algodón',
                 'max_selection' => 5,
-                'image_url' => 'https://m.media-amazon.com/images/I/51N57Jxlt1L._AC_SX148_SY213_QL70_.jpg',
+                'image_url' => 'https://m.media-amazon.com/images/I/91BKUiCU+wL._AC_UF1000,1000_QL80_FMwebp_.jpg',
             ],
             [
                 'name' => 'Cobijas',
@@ -73,27 +73,27 @@ class GiftSeeder extends Seeder
             [
                 'name' => 'Ropa invierno',
                 'max_selection' => 4,
-                'image_url' => 'https://images.unsplash.com/photo-1514090458221-65bb69cf63e6?w=800&auto=format&fit=crop&q=80',
+                'image_url' => 'https://m.media-amazon.com/images/I/8161norhKtL._AC_UY1000_.jpg',
             ],
             [
                 'name' => 'Set de colonia',
                 'max_selection' => 2,
-                'image_url' => 'https://images.unsplash.com/photo-1616949755610-8c9bbc08f138?w=800&auto=format&fit=crop&q=80',
+                'image_url' => 'https://m.media-amazon.com/images/I/511FeByoHlL._AC_UF1000,1000_QL80_FMwebp_.jpg',
             ],
             [
                 'name' => 'Crema corporal',
                 'max_selection' => 3,
-                'image_url' => 'https://images.unsplash.com/photo-1608248597260-24436573c7b6?w=800&auto=format&fit=crop&q=80',
+                'image_url' => 'https://m.media-amazon.com/images/I/61RAxsnf3aL._AC_UF894,1000_QL80_FMwebp_.jpg',
             ],
             [
                 'name' => 'Jabones bebe',
                 'max_selection' => 5,
-                'image_url' => 'https://images.unsplash.com/photo-1607006344380-b6775a0847a4?w=800&auto=format&fit=crop&q=80',
+                'image_url' => 'https://m.media-amazon.com/images/I/71tQTgv2xtL._AC_UF1000,1000_QL80_FMwebp_.jpg',
             ],
             [
                 'name' => 'Champú bebe',
                 'max_selection' => 3,
-                'image_url' => 'https://images.unsplash.com/photo-1535585209827-a15fcdbc4c2d?w=800&auto=format&fit=crop&q=80',
+                'image_url' => 'https://m.media-amazon.com/images/I/619AJ7bvJJL._AC_UF894,1000_QL80_FMwebp_.jpg',
             ],
             [
                 'name' => 'Toallas de baño',
