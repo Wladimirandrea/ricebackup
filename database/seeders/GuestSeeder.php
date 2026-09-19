@@ -13,9 +13,31 @@ class GuestSeeder extends Seeder
     public function run(): void
     {
         DB::table('guests')->insertOrIgnore([
-            ['name' => 'Invitado 1'],
-            ['name' => 'Invitado 2'],
-            ['name' => 'Invitado 3'],
+            ['name' => 'Carolina'],
+            ['name' => 'Pedro'],
+            ['name' => 'Lenin'],
+            ['name' => 'Justo'],
+            ['name' => 'Chani'],
+            ['name' => 'Marly'],
+            ['name' => 'Enner'],
+            ['name' => 'Astrid'],
+            ['name' => 'Silvia'],
+            ['name' => 'Gloria'],
+            ['name' => 'Monica'],
+            ['name' => 'Selene'],
+            ['name' => 'Mary'],
+            ['name' => 'Irma'],
+            ['name' => 'Alexander'],
+            ['name' => 'Paola'],
+            ['name' => 'Michelle'],
+            ['name' => 'Angela'],
+            ['name' => 'Becca'],
+            ['name' => 'Eddy'],
+            ['name' => 'Sandra'],
+            ['name' => 'Georgina'],
+            ['name' => 'Isabel'],
+            
+            
         ]);
     }
 }
