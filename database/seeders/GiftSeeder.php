@@ -53,7 +53,7 @@ class GiftSeeder extends Seeder
             [
                 'name' => 'Cuna',
                 'max_selection' => 1,
-                'image_url' => 'https://images.unsplash.com/photo-1519689680058-324335c77eba?w=800&auto=format&fit=crop&q=80',
+                'image_url' => 'https://m.media-amazon.com/images/I/81JdqjNTQPL._AC_UF894,1000_QL80_FMwebp_.jpg',
             ],
             [
                 'name' => 'Mecedora',
