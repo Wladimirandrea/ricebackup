@@ -66,19 +66,19 @@ const routes = [
         ],
     },
 
-    // Rutas públicas para Baby Shower
+    // Rutas públicas para Baby Shower (Actualizadas con :name)
     {
-        path: '/baby-shower',
+        path: '/baby-shower/:name?',
         name: 'baby-shower-intro',
         component: () => import('@/views/BabyShowerIntro.vue'),
     },
     {
-        path: '/baby-shower/card/:guestId',
+        path: '/baby-shower/card/:name',
         name: 'baby-shower-card',
         component: () => import('@/views/BabyShowerCard.vue')
     },
     {
-        path: '/baby-shower/guest/:guestId',
+        path: '/baby-shower/guest/:name',
         name: 'baby-shower-guest',
         component: () => import('@/views/BabyShowerView.vue')
     },
@@ -91,7 +91,6 @@ const routes = [
 ]
 
 const router = createRouter({
-    // ✅ Corregido: se usa '/' directamente para evitar que agregue '/build/'
     history: createWebHistory('/'),
     routes,
 })
