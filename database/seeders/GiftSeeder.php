@@ -68,7 +68,7 @@ class GiftSeeder extends Seeder
             [
                 'name' => 'Cobijas',
                 'max_selection' => 3,
-                'image_url' => 'https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?w=800&auto=format&fit=crop&q=80',
+                'image_url' => 'https://m.media-amazon.com/images/I/91AajNOyGqL._AC_UF894,1000_QL80_FMwebp_.jpg',
             ],
             [
                 'name' => 'Ropa invierno',
