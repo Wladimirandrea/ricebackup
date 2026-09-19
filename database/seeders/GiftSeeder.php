@@ -63,7 +63,7 @@ class GiftSeeder extends Seeder
             [
                 'name' => 'Panales de algodón',
                 'max_selection' => 5,
-                'image_url' => 'https://images.unsplash.com/photo-1519689680058-324335c77eba?w=800&auto=format&fit=crop&q=80',
+                'image_url' => 'https://m.media-amazon.com/images/I/51N57Jxlt1L._AC_SX148_SY213_QL70_.jpg',
             ],
             [
                 'name' => 'Cobijas',
