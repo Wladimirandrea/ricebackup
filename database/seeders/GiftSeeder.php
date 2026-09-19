@@ -98,37 +98,37 @@ class GiftSeeder extends Seeder
             [
                 'name' => 'Toallas de baño',
                 'max_selection' => 3,
-                'image_url' => 'https://images.unsplash.com/photo-1616627547584-bf28cee262db?w=800&auto=format&fit=crop&q=80',
+                'image_url' => 'https://m.media-amazon.com/images/I/61ofzCFvsqL._AC_UF894,1000_QL80_FMwebp_.jpg',
             ],
             [
                 'name' => 'Kit postparto',
                 'max_selection' => 1,
-                'image_url' => 'https://images.unsplash.com/photo-1584017911766-d451b3d0e843?w=800&auto=format&fit=crop&q=80',
+                'image_url' => 'https://m.media-amazon.com/images/I/717eWDJmctL._AC_UF1000,1000_QL80_FMwebp_.jpg',
             ],
             [
                 'name' => 'Pañalera',
                 'max_selection' => 1,
-                'image_url' => 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=800&auto=format&fit=crop&q=80',
+                'image_url' => 'https://m.media-amazon.com/images/I/71B0T+3BwwL._AC_UL1500_.jpg',
             ],
             [
                 'name' => 'Esponjas absorbente lactancia',
                 'max_selection' => 3,
-                'image_url' => 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=800&auto=format&fit=crop&q=80',
+                'image_url' => 'https://m.media-amazon.com/images/I/61xs6uCLzUL._AC_UF894,1000_QL80_FMwebp_.jpg',
             ],
             [
                 'name' => 'Porta bebe',
                 'max_selection' => 1,
-                'image_url' => 'https://images.unsplash.com/photo-1516627145497-ae6968895b74?w=800&auto=format&fit=crop&q=80',
+                'image_url' => 'https://m.media-amazon.com/images/I/81Yew-KOsNL._AC_UF894,1000_QL80_FMwebp_.jpg',
             ],
             [
                 'name' => 'Lazos',
                 'max_selection' => 5,
-                'image_url' => 'https://images.unsplash.com/photo-1607083206869-4c7672e72a8a?w=800&auto=format&fit=crop&q=80',
+                'image_url' => 'https://m.media-amazon.com/images/I/81QgPGk43HL._AC_UF1000,1000_QL80_FMwebp_.jpg',
             ],
             [
                 'name' => 'Almohada lactancia',
                 'max_selection' => 1,
-                'image_url' => 'https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?w=800&auto=format&fit=crop&q=80',
+                'image_url' => 'https://m.media-amazon.com/images/I/717OdHP5juL._AC_UF894,1000_QL80_FMwebp_.jpg',
             ],
             [
                 'name' => 'Muñequitos de apego',
