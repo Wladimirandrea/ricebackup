@@ -9,17 +9,22 @@ use Exception;
 
 class GiftRegistryController extends Controller
 {
-    public function show($guestId)
+    public function show($identifier)
     {
         try {
-            $guest = Guest::find($guestId);
+            // Busca por ID si es numérico, o por nombre si es texto (ej: 'carolina')
+            $guest = is_numeric($identifier)
+                ? Guest::find($identifier)
+                : Guest::where('name', $identifier)->first();
 
             if (!$guest) {
                 return response()->json([
-                    'error' => "El invitado con ID {$guestId} no existe en la base de datos."
+                    'error' => "El invitado '{$identifier}' no existe en la base de datos."
                 ], 404);
             }
             
+            $guestId = $guest->id;
+
             // Carga regalos con conteo de selecciones y evalúa estado para la vista
             $gifts = Gift::withCount('guests')->get()->map(function ($gift) use ($guestId) {
                 $maxSelection = $gift->max_selection ?? 1;
