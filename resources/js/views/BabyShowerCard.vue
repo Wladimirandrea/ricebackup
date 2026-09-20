@@ -84,7 +84,10 @@ const handleFirstInteraction = () => {
 
 // 7. Navegación a la vista de regalos usando el nombre
 const goToGiftRegistry = () => {
-  router.push(`/baby-shower/guest/${guestSlug.value}`)
+  router.push({ 
+    name: 'baby-shower-guest', 
+    params: { name: guestSlug.value } 
+  })
 }
 
 onMounted(() => {
@@ -247,7 +250,6 @@ onUnmounted(() => {
 </template>
 
 <style scoped>
-/* Tus estilos actuales se mantienen intactos */
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Great+Vibes&family=Montserrat:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap');
 
 .card-wrapper {
