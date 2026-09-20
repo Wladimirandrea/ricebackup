@@ -68,7 +68,7 @@ const routes = [
 
     // Rutas públicas para Baby Shower (Actualizadas con :name)
     {
-        path: '/baby-shower/:name?',
+        path: '/baby-shower/:name',
         name: 'baby-shower-intro',
         component: () => import('@/views/BabyShowerIntro.vue'),
     },
