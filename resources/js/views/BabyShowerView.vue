@@ -41,8 +41,11 @@ onMounted(loadData)
 </script>
 
 <template>
-  <div v-if="currentGuest" class="page-container" :style="{ backgroundImage: `url('/images/regalos.jpeg')` }">
-    <div class="content-wrapper">
+  <div class="page-container" :style="{ backgroundImage: `url('/images/regalos.jpeg')` }">
+    <p v-if="loading" class="title-fantasy">Cargando...</p>
+    <p v-else-if="error" class="success-message" style="background:#b91c1c">{{ error }}</p>
+
+    <div v-else-if="currentGuest" class="content-wrapper">
       <h1 class="title-fantasy">¡Bienvenido/a, {{ currentGuest.name }}!</h1>
 
       <div class="description-card">
