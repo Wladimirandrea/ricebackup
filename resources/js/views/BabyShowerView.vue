@@ -1,20 +1,20 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import axios from 'axios'
 
 const route = useRoute()
 const router = useRouter()
 
-// 1. Capturar el nombre del invitado desde la ruta (:name)
+// Capturamos el parámetro 'name' definido en el router de Vue
 const guestSlug = ref(route.params.name)
 const guestName = ref('Cargando...')
 const gifts = ref([])
 
-// 2. Obtener datos del invitado y sus regalos desde Laravel
 const fetchGuestData = async () => {
   if (!guestSlug.value) return
   try {
+    // Hace la petición a /api/baby-shower/guest/carolina (por ejemplo)
     const response = await axios.get(`/api/baby-shower/guest/${guestSlug.value}`)
     if (response.data) {
       guestName.value = response.data.guest.name
@@ -24,12 +24,6 @@ const fetchGuestData = async () => {
     console.error('Error al cargar datos:', error)
     guestName.value = 'Invitado'
   }
-}
-
-// Función para reservar regalo usando el ID del invitado obtenido de la respuesta
-const selectGift = async (giftId) => {
-  // Asegúrate de enviar el id real del invitado que cargó la API
-  // ... tu lógica actual de selección de regalo ...
 }
 
 onMounted(() => {
