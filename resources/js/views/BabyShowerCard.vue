@@ -6,8 +6,8 @@ import axios from 'axios'
 const route = useRoute()
 const router = useRouter()
 
-// 1. Capturar ID del invitado desde la URL
-const guestId = ref(route.params.guestId)
+// 1. Capturar el nombre del invitado desde la URL (:name)
+const guestSlug = ref(route.params.name)
 const guestName = ref('Cargando...')
 
 // 2. Estado de Audio
@@ -25,11 +25,11 @@ let timerInterval = null
 const noteIcon = "M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"
 const muteIcon = "M4.27 3L3 4.27l9 9v.28c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 3.02 0 3.84-2.12l4.42 4.42L19.73 21 4.27 3zM14 7h4V3h-6v5.18l2 2V7z"
 
-// 4. Obtener nombre del invitado desde Laravel
+// 4. Obtener nombre del invitado desde Laravel usando el parámetro de la ruta
 const fetchGuestData = async () => {
-  if (!guestId.value) return
+  if (!guestSlug.value) return
   try {
-    const response = await axios.get(`/api/baby-shower/guest/${guestId.value}`)
+    const response = await axios.get(`/api/baby-shower/guest/${guestSlug.value}`)
     if (response.data && response.data.guest) {
       guestName.value = response.data.guest.name
     }
@@ -82,9 +82,9 @@ const handleFirstInteraction = () => {
   window.removeEventListener('touchstart', handleFirstInteraction)
 }
 
-// 7. Navegación a la vista de regalos
+// 7. Navegación a la vista de regalos usando el nombre
 const goToGiftRegistry = () => {
-  router.push(`/baby-shower/guest/${guestId.value}`)
+  router.push(`/baby-shower/guest/${guestSlug.value}`)
 }
 
 onMounted(() => {
@@ -119,7 +119,8 @@ onUnmounted(() => {
     <!-- SECCIÓN 1: INVITACIÓN PRINCIPAL -->
     <div class="card-container invitation-card">
       <div class="content-top">
-        <h2 class="guest-greeting">¡Hola, Familia y Amigos!</h2>
+        <!-- Saludo dinámico con el nombre del invitado -->
+        <h2 class="guest-greeting">¡Hola, {{ guestName }}!</h2>
         <p class="top-header">¡Una princesita está en camino!</p>
       </div>
 
@@ -246,6 +247,7 @@ onUnmounted(() => {
 </template>
 
 <style scoped>
+/* Tus estilos actuales se mantienen intactos */
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Great+Vibes&family=Montserrat:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap');
 
 .card-wrapper {
@@ -261,7 +263,6 @@ onUnmounted(() => {
   width: 100%;
 }
 
-/* BOTÓN FLOTANTE DE AUDIO */
 .audio-btn {
   position: fixed;
   top: 20px;
@@ -300,7 +301,6 @@ onUnmounted(() => {
   text-transform: uppercase;
 }
 
-/* ESTILOS GENERALES DE TARJETAS */
 .card-container {
   position: relative;
   width: 100%;
@@ -338,7 +338,6 @@ onUnmounted(() => {
   width: 100%;
 }
 
-/* SECCIÓN 1: INVITACIÓN PRINCIPAL */
 .invitation-card {
   background: url('/images/imagen-princesa.jpg') no-repeat center center / cover;
 }
@@ -445,7 +444,6 @@ onUnmounted(() => {
   line-height: 1.5;
 }
 
-/* SECCIÓN 2: MIS PAPITOS */
 .papitos-card {
   background: url('/images/imagen-princesa.jpg') no-repeat center center / cover;
   justify-content: space-between;
@@ -532,7 +530,6 @@ onUnmounted(() => {
   z-index: 1;
 }
 
-/* SECCIÓN 3: GLOBO Y CONTADOR */
 .balloon-card {
   background: url('/images/imagen-globo.jpg') no-repeat center center / cover;
 }
@@ -594,7 +591,6 @@ onUnmounted(() => {
   margin-bottom: 12px;
 }
 
-/* SECCIÓN 4: UBICACIÓN Y MAPS */
 .map-card {
   background: url('/images/imagen-jeep.jpg') no-repeat center center / cover;
   justify-content: flex-start;
@@ -642,7 +638,6 @@ onUnmounted(() => {
   text-transform: uppercase;
 }
 
-/* SECCIÓN 5: MESA DE REGALOS */
 .gifts-card {
   background: url('/images/Gemini_Generated_Image_o5g62go5g62go5g6.jpeg') no-repeat center center / cover;
   justify-content: space-between;
@@ -695,7 +690,6 @@ onUnmounted(() => {
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.45);
 }
 
-/* SECCIÓN 6: TE ESPERAMOS */
 .family-card {
   background: url('/images/familia.jpg') no-repeat center top / cover;
   justify-content: flex-end;
