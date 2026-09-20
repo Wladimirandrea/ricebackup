@@ -1,34 +1,43 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 import axios from 'axios'
 
 const route = useRoute()
-const router = useRouter()
+const guestSlug = route.params.name
 
-// Capturamos el parámetro 'name' definido en el router de Vue
-const guestSlug = ref(route.params.name)
-const guestName = ref('Cargando...')
+const currentGuest = ref(null)
 const gifts = ref([])
+const message = ref('')
+const error = ref('')
+const loading = ref(true)
 
-const fetchGuestData = async () => {
-  if (!guestSlug.value) return
+const loadData = async () => {
   try {
-    // Hace la petición a /api/baby-shower/guest/carolina (por ejemplo)
-    const response = await axios.get(`/api/baby-shower/guest/${guestSlug.value}`)
-    if (response.data) {
-      guestName.value = response.data.guest.name
-      gifts.value = response.data.gifts
-    }
-  } catch (error) {
-    console.error('Error al cargar datos:', error)
-    guestName.value = 'Invitado'
+    const { data } = await axios.get(`/api/baby-shower/guest/${guestSlug}`)
+    currentGuest.value = data.guest
+    gifts.value = data.gifts
+  } catch (e) {
+    console.error('Error al cargar datos:', e)
+    error.value = 'No pudimos cargar tu invitación. Verifica tu enlace.'
+  } finally {
+    loading.value = false
   }
 }
 
-onMounted(() => {
-  fetchGuestData()
-})
+const selectGift = async (giftId) => {
+  try {
+    const { data } = await axios.post(`/api/baby-shower/${giftId}/select`, {
+      guest_id: currentGuest.value.id
+    })
+    message.value = data.message
+    await loadData()
+  } catch (e) {
+    alert(e.response?.data?.message || 'Error al seleccionar el regalo')
+  }
+}
+
+onMounted(loadData)
 </script>
 
 <template>
