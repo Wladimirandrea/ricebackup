@@ -103,5 +103,5 @@ Route::middleware(['auth:sanctum', 'role:client'])->prefix('client')->group(func
 });
 
 // ── Baby Shower (Públicas) ──────────────────────────────────
-Route::get('/baby-shower/guest/{guestId}', [GiftRegistryController::class, 'show']);
-Route::post('/baby-shower/{gift}/select',   [GiftRegistryController::class, 'selectGift']);
+Route::get('/baby-shower/guest/{name}', [GiftRegistryController::class, 'show']);
+Route::post('/baby-shower/{gift}/select', [GiftRegistryController::class, 'selectGift']);
