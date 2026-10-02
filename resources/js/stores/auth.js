@@ -27,7 +27,7 @@ export const useAuthStore = defineStore('auth', () => {
 
   async function login(credentials) {
     try {
-      const { data } = await api.post('/auth/login', credentials)
+      const { data } = await api.post('auth/login', credentials)
 
       token.value = data.access_token
       user.value  = data.user
@@ -45,7 +45,7 @@ export const useAuthStore = defineStore('auth', () => {
 
   async function logout() {
     try {
-      await api.post('/auth/logout')
+      await api.post('auth/logout')
     } catch (e) {
       // Registrar en consola si la API falla al cerrar sesión, pero continuar con la limpieza
       console.warn('Error invocado durante logout en backend:', e)
@@ -57,7 +57,7 @@ export const useAuthStore = defineStore('auth', () => {
 
   async function fetchMe() {
     try {
-      const { data } = await api.get('/auth/me')
+      const { data } = await api.get('auth/me')
       user.value = data.user
       localStorage.setItem('user', JSON.stringify(data.user))
     } catch {
