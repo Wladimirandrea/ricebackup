@@ -10,31 +10,26 @@ if (import.meta.env.DEV) {
     Pusher.logToConsole = true
 }
 
-// URL base sin el prefijo /api
-const appUrl = import.meta.env.VITE_API_URL || 'http://192.168.12.125:8000/api'
-
 const echo = new Echo({
     broadcaster:        'reverb',
     key:                import.meta.env.VITE_REVERB_APP_KEY,
     wsHost:             import.meta.env.VITE_REVERB_HOST,
-    wsPort:             import.meta.env.VITE_REVERB_PORT       ?? 8080,
-    wssPort:            import.meta.env.VITE_REVERB_PORT       ?? 8080,
-    forceTLS:           (import.meta.env.VITE_REVERB_SCHEME ?? 'http') === 'https',
+    wsPort:             import.meta.env.VITE_REVERB_PORT       ?? 443, // ⬅️ Puerto seguro por defecto en Laravel Cloud
+    wssPort:            import.meta.env.VITE_REVERB_PORT       ?? 443, // ⬅️ Puerto seguro por defecto en Laravel Cloud
+    forceTLS:           true,
     enabledTransports:  ['ws', 'wss'],
     disableStats:       true,
     // ── Reconexión automática ──────────────────────────────
     activityTimeout:    30000,
     pongTimeout:        10000,
     unavailableTimeout: 10000,
-    // ── Autorización de canales privados con token Sanctum ─
+    // ── Autorización de canales privados usando la instancia api ─
     authorizer: (channel) => {
         return {
             authorize: (socketId, callback) => {
                 api.post('/broadcasting/auth', {
                     socket_id:    socketId,
                     channel_name: channel.name,
-                }, {
-                    baseURL: appUrl  // ← apunta a /broadcasting/auth sin el prefijo /api
                 })
                 .then(response => callback(null, response.data))
                 .catch(error  => callback(error, null))

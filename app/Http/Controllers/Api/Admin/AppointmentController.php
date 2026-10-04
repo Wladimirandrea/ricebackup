@@ -258,19 +258,21 @@ class AppointmentController extends Controller
         $appointment = Appointment::create($validated);
         $appointment->load('client:id,name,email,profile_image', 'caseManager:id,name,email,profile_image');
 
-        //enviar evento
-        broadcast(new AppointmentCreatedEvent($appointment))->toOthers();
+        // Enviar evento de forma segura (Protegido contra fallos de Reverb)
+        try {
+            broadcast(new AppointmentCreatedEvent($appointment))->toOthers();
+        } catch (\Exception $e) {
+            Log::error('Error broadcasting appointment: ' . $e->getMessage());
+        }
 
         // Enviar emails
         $locale = $isEs ? 'es' : 'en';
         $devEmail = app()->environment('local') ? 'wladimirandrea2@gmail.com' : null;
 
         try {
-            // Correo al cliente
             Mail::to($devEmail ?? $appointment->client->email)
                 ->send(new AppointmentCreatedMail($appointment, 'client', $locale));
 
-            // Correo al case manager
             Mail::to($devEmail ?? $appointment->caseManager->email)
                 ->send(new AppointmentCreatedMail($appointment, 'case_manager', $locale));
         } catch (\Exception $e) {
@@ -316,13 +318,15 @@ class AppointmentController extends Controller
         $appointment->update($validated);
 
         if ($previousStatus !== $appointment->status) {
-            broadcast(new AppointmentStatusUpdatedEvent($appointment, $previousStatus, 'admin'));
+            try {
+                broadcast(new AppointmentStatusUpdatedEvent($appointment, $previousStatus, 'admin'));
+            } catch (\Exception $e) {
+                Log::error('Error broadcasting status update: ' . $e->getMessage());
+            }
         }
 
         return response()->json(['message' => 'Status updated successfully.']);
     }
-
-
 
     public function update(Request $request, Appointment $appointment): JsonResponse
     {
