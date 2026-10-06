@@ -5,18 +5,29 @@ import echo from '@/plugins/echo'
 import { useAuthStore } from '@/stores/auth'
 
 export const useNotificationStore = defineStore('notifications', () => {
-    const stored = localStorage.getItem('app_notifications')
-    const notifications = ref(stored ? JSON.parse(stored) : [])
+    // ── Estado ──────────────────────────────────────────────
+    function loadStored() {
+        try {
+            const stored = localStorage.getItem('app_notifications')
+            return stored ? JSON.parse(stored) : []
+        } catch (_) {
+            return []
+        }
+    }
+
+    const notifications = ref(loadStored())
 
     const unreadCount = computed(() =>
         notifications.value.filter(n => !n.read).length
     )
 
     function save() {
-        localStorage.setItem(
-            'app_notifications',
-            JSON.stringify(notifications.value.slice(0, 50))
-        )
+        try {
+            localStorage.setItem(
+                'app_notifications',
+                JSON.stringify(notifications.value.slice(0, 50))
+            )
+        } catch (_) {}
     }
 
     // ── Sonido ──────────────────────────────────────────────
@@ -29,9 +40,11 @@ export const useNotificationStore = defineStore('notifications', () => {
     }
 
     // ── Agregar notificación ────────────────────────────────
+    let idCounter = 0
+
     function add({ type, clientName, caseManagerName, date, time, status }) {
         notifications.value.unshift({
-            id:              Date.now(),
+            id:              `${Date.now()}-${idCounter++}`, // evita ids repetidos
             type,
             clientName,
             caseManagerName,
@@ -41,6 +54,10 @@ export const useNotificationStore = defineStore('notifications', () => {
             read:            false,
             createdAt:       new Date().toISOString(),
         })
+        // Mantener solo las 50 más recientes también en memoria
+        if (notifications.value.length > 50) {
+            notifications.value.length = 50
+        }
         save()
         playSound()
     }
@@ -69,69 +86,66 @@ export const useNotificationStore = defineStore('notifications', () => {
             caseManagerName: appt.case_manager?.name  ?? '—',
             date:            appt.date                ?? '—',
             time:            appt.start_time          ?? '—',
-            status:          appt.status               ?? 'pending',
+            status:          appt.status              ?? 'pending',
         })
     }
 
     // ── Handler: status actualizado ──────────────────────────
     function handleAppointmentStatusUpdated(data) {
+        const appt = data.appointment ?? data
         add({
-            type:            data.status === 'cancelled' ? 'cancelled' : 'status_changed',
-            clientName:      data.client?.name        ?? '—',
-            caseManagerName: data.case_manager?.name  ?? '—',
-            date:            data.date                ?? '—',
-            time:            data.start_time          ?? '—',
-            status:          data.status               ?? 'pending',
+            type:            appt.status === 'cancelled' ? 'cancelled' : 'status_changed',
+            clientName:      appt.client?.name        ?? '—',
+            caseManagerName: appt.case_manager?.name  ?? '—',
+            date:            appt.date                ?? '—',
+            time:            appt.start_time          ?? '—',
+            status:          appt.status              ?? 'pending',
         })
     }
 
     // ── Suscripción Reverb por rol ──────────────────────────
-    let subscribed = false
+    // Guardamos el canal activo para poder salir de él aunque
+    // el usuario ya sea null (caso del logout).
+    let currentChannel = null
 
-    function subscribeReverb() {
-        if (subscribed) return
-        subscribed = true
-
-        const auth = useAuthStore()
-        const user = auth.user
-
-        if (!user) return
-
-        if (user.role === 'admin') {
-            echo
-                .channel('appointments')
-                .listen('.appointment.created', handleAppointmentCreated)
-                .listen('.appointment.status-updated', handleAppointmentStatusUpdated)
-
-        } else if (user.role === 'case_manager') {
-            echo
-                .private(`manager.${user.id}`)
-                .listen('.appointment.created', handleAppointmentCreated)
-                .listen('.appointment.status-updated', handleAppointmentStatusUpdated)
-
-        } else if (user.role === 'client') {
-            echo
-                .private(`client.${user.id}`)
-                .listen('.appointment.created', handleAppointmentCreated)
-                .listen('.appointment.status-updated', handleAppointmentStatusUpdated)
+    function channelNameFor(user) {
+        switch (user.role) {
+            case 'admin':        return { name: 'appointments',            isPrivate: false }
+            case 'case_manager': return { name: `manager.${user.id}`,     isPrivate: true  }
+            case 'client':       return { name: `client.${user.id}`,      isPrivate: true  }
+            default:             return null
         }
     }
 
-    function unsubscribeReverb() {
-        const auth = useAuthStore()
-        const user = auth.user
-
+    function subscribeReverb() {
+        const user = useAuthStore().user
         if (!user) return
 
-        if (user.role === 'admin') {
-            echo.leaveChannel('appointments')
-        } else if (user.role === 'case_manager') {
-            echo.leaveChannel(`private-manager.${user.id}`)
-        } else if (user.role === 'client') {
-            echo.leaveChannel(`private-client.${user.id}`)
-        }
+        const target = channelNameFor(user)
+        if (!target) return
 
-        subscribed = false
+        // Ya estamos suscritos a este mismo canal
+        if (currentChannel === target.name) return
+
+        // Si había otro canal (cambio de usuario sin pasar por null), salir primero
+        unsubscribeReverb()
+
+        const channel = target.isPrivate
+            ? echo.private(target.name)
+            : echo.channel(target.name)
+
+        channel
+            .listen('.appointment.created',        handleAppointmentCreated)
+            .listen('.appointment.status-updated', handleAppointmentStatusUpdated)
+
+        currentChannel = target.name
+    }
+
+    function unsubscribeReverb() {
+        if (!currentChannel) return
+        // leave() añade el prefijo private-/presence- correctamente
+        echo.leave(currentChannel)
+        currentChannel = null
     }
 
     return {
