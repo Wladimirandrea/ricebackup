@@ -43,13 +43,19 @@ class User extends Authenticatable
     }
 
     // ─── Accessors ────────────────────────────────────────────
-    public function getProfileImageUrlAttribute(): string
+    public function getProfileImageUrlAttribute()
     {
-        if ($this->profile_image) {
-            return asset('storage/' . $this->profile_image);
+        if (!$this->profile_image) {
+            return asset('images/default-avatar.png'); // o una por defecto
         }
-        // Genera avatar con iniciales como fallback
-        return 'https://ui-avatars.com/api/?name=' . urlencode($this->name) . '&background=0D8ABC&color=fff';
+
+        // Si ya es una URL completa (por seguridad)
+        if (str_starts_with($this->profile_image, 'http')) {
+            return $this->profile_image;
+        }
+
+        // Esto genera la URL pública firmada o directa de tu bucket S3/Laravel Cloud
+        return Storage::disk('s3')->url($this->profile_image);
     }
 
     // ─── Helpers de Rol ───────────────────────────────────────

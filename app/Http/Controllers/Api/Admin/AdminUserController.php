@@ -68,46 +68,50 @@ class AdminUserController extends Controller
         ]);
     }
 
-    public function update(Request $request, User $user)
+    public function update(Request $request, User $user): JsonResponse
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $user->id,
-            'password' => 'nullable|string|min:8',
-            'role' => 'required|in:admin,case_manager,client',
+            'name'          => 'required|string|max:255',
+            'email'         => 'required|email|unique:users,email,' . $user->id,
+            'password'      => 'nullable|string|min:8',
+            'role'          => 'required|in:admin,case_manager,client',
             'profile_image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-            'is_active' => 'boolean',
+            'is_active'     => 'boolean',
         ]);
 
-        // Si sube una nueva imagen
+        // 1. Si sube una nueva imagen, se guarda en el bucket de Laravel Cloud (disco 's3')
         if ($request->hasFile('profile_image')) {
-
-            // Eliminar la imagen anterior si existe
-            if ($user->profile_image && Storage::disk('public')->exists($user->profile_image)) {
-                Storage::disk('public')->delete($user->profile_image);
+            // Eliminar la imagen anterior del bucket si existe
+            if ($user->profile_image && Storage::disk('s3')->exists($user->profile_image)) {
+                Storage::disk('s3')->delete($user->profile_image);
             }
 
-            $path = $request->file('profile_image')->store('profile-images', 'public');
+            $path = $request->file('profile_image')->store('profile-images', 's3');
             $validated['profile_image'] = $path;
         } else {
-            // Si no sube imagen nueva, no tocar el campo
+            // Si no subió imagen nueva, removemos el campo para no sobrescribir la actual con null
             unset($validated['profile_image']);
         }
 
-        // Solo actualizar password si se envió uno
+        // 2. Solo actualizar password si se escribió uno nuevo
         if (!empty($validated['password'])) {
             $validated['password'] = Hash::make($validated['password']);
         } else {
             unset($validated['password']);
         }
 
-        $validated['is_active'] = $request->boolean('is_active');
+        // 3. Manejar is_active de forma segura (si viene en la petición)
+        if ($request->has('is_active')) {
+            $validated['is_active'] = $request->boolean('is_active');
+        }
 
         $user->update($validated);
 
-        return redirect()
-            ->route('users.index')
-            ->with('success', 'Usuario actualizado correctamente.');
+        // 4. Retornar JSON limpio que tu modal procesará correctamente en 'savedUser'
+        return response()->json([
+            'message' => 'Usuario actualizado correctamente.',
+            'data'    => $this->formatUser($user->fresh()),
+        ]);
     }
 
     public function destroy(User $user): JsonResponse
