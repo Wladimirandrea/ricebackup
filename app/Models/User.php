@@ -55,8 +55,8 @@ class User extends Authenticatable
             return $this->profile_image;
         }
 
-        // Esto genera la URL pública firmada o directa de tu bucket S3/Laravel Cloud
-        return Storage::disk('s3')->url($this->profile_image);
+        // Cambiar 's3' por 'r2' para que coincida con tu bucket de Laravel Cloud
+        return Storage::disk('r2')->url($this->profile_image);
     }
 
     // ─── Helpers de Rol ───────────────────────────────────────
