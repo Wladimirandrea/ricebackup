@@ -1,3 +1,4 @@
+// resources/js/plugins/axios.js
 import axios from 'axios'
 import { i18n } from '@/i18n'
 
@@ -16,6 +17,15 @@ api.interceptors.request.use((config) => {
         config.headers.Authorization = `Bearer ${token}`
     }
     config.headers['Accept-Language'] = i18n.global.locale.value
+
+    // Necesario para que broadcast(...)->toOthers() excluya al usuario que
+    // origina la acción. Se lee de window.Echo (definido en plugins/echo.js)
+    // para evitar una importación circular. No se envía en /broadcasting/auth,
+    // que ya manda su propio socket_id en el body.
+    const socketId = window.Echo?.socketId?.()
+    if (socketId && !config.url?.includes('/broadcasting/auth')) {
+        config.headers['X-Socket-ID'] = socketId
+    }
 
     // Si el body es FormData (por ejemplo, al subir archivos/imágenes),
     // eliminamos el Content-Type fijo para que el navegador genere

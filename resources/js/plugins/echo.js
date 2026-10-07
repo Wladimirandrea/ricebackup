@@ -71,4 +71,8 @@ connection.bind('error', (err) => {
     console.error('[Reverb] Error:', err)
 })
 
+// Expuesto para que axios pueda leer el socketId (header X-Socket-ID)
+// sin crear una importación circular entre echo.js y axios.js
+window.Echo = echo
+
 export default echo
