@@ -82,15 +82,22 @@ class AdminUserController extends Controller
 
         // Si sube una nueva imagen, eliminar la anterior del bucket 'r2' y guardar la nueva
         if ($request->hasFile('profile_image')) {
-            if ($user->profile_image && Storage::disk('r2')->exists($user->profile_image)) {
-                Storage::disk('r2')->delete($user->profile_image);
-            }
+            try {
+                $path = $request->file('profile_image')
+                    ->store('profile-images', 'r2');
 
-            $path = $request->file('profile_image')->store('profile-images', 'r2');
-            $validated['profile_image'] = $path;
-        } else {
-            // Si no sube imagen nueva, no tocar este campo
-            unset($validated['profile_image']);
+                $validated['profile_image'] = $path;
+            } catch (\Throwable $e) {
+                \Log::error('ERROR SUBIENDO IMAGEN R2', [
+                    'message' => $e->getMessage(),
+                    'exception' => get_class($e),
+                ]);
+
+                return response()->json([
+                    'message' => 'Error al subir imagen',
+                    'error' => $e->getMessage(),
+                ], 500);
+            }
         }
 
         // Solo actualizar password si se envió uno
