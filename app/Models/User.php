@@ -47,16 +47,23 @@ class User extends Authenticatable
     public function getProfileImageUrlAttribute()
     {
         if (!$this->profile_image) {
-            return asset('images/default-avatar.png'); // o una por defecto
+            return asset('images/default-avatar.png');
         }
 
-        // Si ya es una URL completa (por seguridad)
         if (str_starts_with($this->profile_image, 'http')) {
             return $this->profile_image;
         }
 
-        // Cambiar 's3' por 'r2' para que coincida con tu bucket de Laravel Cloud
-        return Storage::disk('r2')->url($this->profile_image);
+        try {
+            return Storage::disk('r2')->url($this->profile_image);
+        } catch (\Throwable $e) {
+            \Log::warning('No se pudo generar la URL de la imagen', [
+                'user_id' => $this->id,
+                'error'   => $e->getMessage(),
+            ]);
+
+            return asset('images/default-avatar.png');
+        }
     }
 
     // ─── Helpers de Rol ───────────────────────────────────────
